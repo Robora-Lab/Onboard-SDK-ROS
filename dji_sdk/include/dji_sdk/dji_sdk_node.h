@@ -90,10 +90,10 @@
 
 using namespace DJI::OSDK;
 
-class DJISDKNode
+class DJISDKNode : public rclcpp::Node
 {
 public:
-  DJISDKNode(ros::NodeHandle& nh, ros::NodeHandle& nh_private);
+  DJISDKNode();
   ~DJISDKNode();
 
   enum TELEMETRY_TYPE
@@ -111,13 +111,13 @@ public:
   };
 
 private:
-  bool initVehicle(ros::NodeHandle& nh_private);
-  bool initServices(ros::NodeHandle& nh);
-  bool initFlightControl(ros::NodeHandle& nh);
-  bool initSubscriber(ros::NodeHandle& nh);
-  bool initPublisher(ros::NodeHandle& nh);
-  bool initActions(ros::NodeHandle& nh);
-  bool initDataSubscribeFromFC(ros::NodeHandle& nh);
+  bool initVehicle();
+  bool initServices();
+  bool initFlightControl();
+  bool initSubscriber();
+  bool initPublisher();
+  bool initActions();
+  bool initDataSubscribeFromFC();
   void cleanUpSubscribeFromFC();
   bool validateSerialDevice(LinuxSerialDevice* serialDevice);
   bool isM100();

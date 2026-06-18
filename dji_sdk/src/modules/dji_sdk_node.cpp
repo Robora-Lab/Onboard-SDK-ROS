@@ -13,22 +13,33 @@
 
 using namespace DJI::OSDK;
 
-DJISDKNode::DJISDKNode(ros::NodeHandle& nh, ros::NodeHandle& nh_private)
-  : telemetry_from_fc(USE_BROADCAST),
+DJISDKNode::DJISDKNode()
+  : Node("dji_sdk"),
+    telemetry_from_fc(USE_BROADCAST),
     R_FLU2FRD(tf::Matrix3x3(1,  0,  0, 0, -1,  0, 0,  0, -1)),
     R_ENU2NED(tf::Matrix3x3(0,  1,  0, 1,  0,  0, 0,  0, -1)),
     curr_align_state(UNALIGNED)
 {
-  nh_private.param("acm_name",      acm_device, std::string("/dev/ttyACM0"));
-  nh_private.param("serial_name",   serial_device, std::string("/dev/ttyUSB0"));
-  nh_private.param("baud_rate",     baud_rate, 921600);
-  nh_private.param("app_id",        app_id,    123456);
-  nh_private.param("app_version",   app_version, 1);
-  nh_private.param("enc_key",       enc_key, std::string("abcd1234"));
-  nh_private.param("drone_version", drone_version, std::string("M100")); // choose M100 as default
-  nh_private.param("gravity_const", gravity_const, 9.801);
-  nh_private.param("align_time",    align_time_with_FC, false);
-  nh_private.param("use_broadcast", user_select_broadcast, false);
+  this->declare_parameter("acm_name", std::string("/dev/ttyACM0"));
+  acm_device = this->get_parameter("my_parameter").as_string();
+  this->declare_parameter("serial_name", std::string("/dev/ttyUSB0"));
+  serial_device = this->get_parameter("serial_name").as_string();
+  this->declare_parameter("baud_rate", 921600);
+  baud_rate = this->get_parameter("baud_rate").as_int();
+  this->declare_parameter("app_id", 123456);
+  app_id = this->get_parameter("app_id").as_int();
+  this->declare_parameter("app_version", 1);
+  app_version = this->get_parameter("app_version").as_int();
+  this->declare_parameter("enc_key", std::string("abcd1234"));
+  enc_key = this->get_parameter("enc_key").as_string();
+  this->declare_parameter("drone_version", std::string("M100")); // choose M100 as default
+  drone_version = this->get_parameter("drone_version").as_string();
+  this->declare_parameter("gravity_const", 9.801);
+  gravity_const = this->get_parameter("gravity_const").as_double();
+  this->declare_parameter("align_time", false);
+  align_time_with_FC = this->get_parameter("align_time").as_bool();
+  this->declare_parameter("use_broadcast", false);
+  user_select_broadcast = this->get_parameter("use_broadcast").as_bool();
 
   //! Default values for local Position
   local_pos_ref_latitude  = 0;
@@ -41,29 +52,29 @@ DJISDKNode::DJISDKNode(ros::NodeHandle& nh, ros::NodeHandle& nh_private)
 
   // @todo need some error handling for init functions
   //! @note parsing launch file to get environment parameters
-  if (!initVehicle(nh_private))
+  if (!initVehicle())
   {
     ROS_ERROR("Vehicle initialization failed");
   }
 
   else
   {
-    if (!initServices(nh))
+    if (!initServices())
     {
       ROS_ERROR("initServices failed");
     }
 
-    if (!initFlightControl(nh))
+    if (!initFlightControl())
     {
       ROS_ERROR("initFlightControl failed");
     }
 
-    if (!initSubscriber(nh))
+    if (!initSubscriber())
     {
       ROS_ERROR("initSubscriber failed");
     }
 
-    if (!initPublisher(nh))
+    if (!initPublisher())
     {
       ROS_ERROR("initPublisher failed");
     }
@@ -83,7 +94,7 @@ DJISDKNode::~DJISDKNode()
 }
 
 bool
-DJISDKNode::initVehicle(ros::NodeHandle& nh_private)
+DJISDKNode::initVehicle()
 {
   bool threadSupport = true;
   bool enable_advanced_sensing = false;
@@ -132,7 +143,7 @@ DJISDKNode::initVehicle(ros::NodeHandle& nh_private)
 }
 
 // clang-format off
-bool DJISDKNode::initServices(ros::NodeHandle& nh) {
+bool DJISDKNode::initServices() {
   // Common to A3/N3 and M100
   drone_activation_server   = nh.advertiseService("dji_sdk/activation",                     &DJISDKNode::droneActivationCallback,        this);
   drone_arm_server          = nh.advertiseService("dji_sdk/drone_arm_control",              &DJISDKNode::droneArmCallback,               this);
@@ -174,7 +185,7 @@ bool DJISDKNode::initServices(ros::NodeHandle& nh) {
 // clang-format on
 
 bool
-DJISDKNode::initFlightControl(ros::NodeHandle& nh)
+DJISDKNode::initFlightControl()
 {
   flight_control_sub = nh.subscribe<sensor_msgs::Joy>(
     "dji_sdk/flight_control_setpoint_generic", 10, 
@@ -219,7 +230,7 @@ DJISDKNode::activate(int l_app_id, std::string l_enc_key)
 }
 
 bool
-DJISDKNode::initSubscriber(ros::NodeHandle& nh)
+DJISDKNode::initSubscriber()
 {
   gimbal_angle_cmd_subscriber = nh.subscribe<dji_sdk::Gimbal>(
     "dji_sdk/gimbal_angle_cmd", 10, &DJISDKNode::gimbalAngleCtrlCallback, this);
@@ -229,7 +240,7 @@ DJISDKNode::initSubscriber(ros::NodeHandle& nh)
 }
 
 bool
-DJISDKNode::initPublisher(ros::NodeHandle& nh)
+DJISDKNode::initPublisher()
 {
   rc_publisher = nh.advertise<sensor_msgs::Joy>("dji_sdk/rc", 10);
 
@@ -400,7 +411,7 @@ DJISDKNode::initPublisher(ros::NodeHandle& nh)
 
     trigger_publisher = nh.advertise<sensor_msgs::TimeReference>("dji_sdk/trigger_time", 10);
 
-    if (!initDataSubscribeFromFC(nh))
+    if (!initDataSubscribeFromFC())
     {
       return false;
     }
@@ -423,7 +434,7 @@ DJISDKNode::initPublisher(ros::NodeHandle& nh)
 }
 
 bool
-DJISDKNode::initDataSubscribeFromFC(ros::NodeHandle& nh)
+DJISDKNode::initDataSubscribeFromFC()
 {
   ACK::ErrorCode ack = vehicle->subscribe->verify(WAIT_TIMEOUT);
   if (ACK::getError(ack))
