@@ -15,7 +15,7 @@ void
 DJISDKNode::missionStatusCallback(const dji_sdk::srv::MissionStatus::Request::SharedPtr  request,
                                   dji_sdk::srv::MissionStatus::Response::SharedPtr response)
 {
-  ROS_DEBUG("called missionStatusCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called missionStatusCallback");
 
   response->waypoint_mission_count = vehicle->missionManager->wpMissionVector.size();
   response->hotpoint_mission_count = vehicle->missionManager->hpMissionVector.size();
@@ -26,7 +26,7 @@ DJISDKNode::missionWpUploadCallback(
   const dji_sdk::srv::MissionWpUpload::Request::SharedPtr  request,
   dji_sdk::srv::MissionWpUpload::Response::SharedPtr response)
 {
-  ROS_DEBUG("called missionWpUpload");
+  RCLCPP_DEBUG(this->get_logger(), "called missionWpUpload");
 
   //! initialize waypoint mission related info
   ACK::ErrorCode                  initAck;
@@ -50,9 +50,9 @@ DJISDKNode::missionWpUploadCallback(
   initAck = vehicle->missionManager->init(DJI_MISSION_TYPE::WAYPOINT,
                                           WAIT_TIMEOUT, &wpInitData);
 
-  ROS_DEBUG("ack.info: set=%i id=%i", initAck.info.cmd_set,
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", initAck.info.cmd_set,
             initAck.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", initAck.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", initAck.data);
 
   response->cmd_set  = (int)initAck.info.cmd_set;
   response->cmd_id   = (int)initAck.info.cmd_id;
@@ -64,7 +64,7 @@ DJISDKNode::missionWpUploadCallback(
     response->result = false;
   }
 
-  ROS_INFO("initialized waypoint mission");
+  RCLCPP_INFO(this->get_logger(), "initialized waypoint mission");
   sleep(1);
 
   //! initialize waypoint mission related info
@@ -94,7 +94,7 @@ DJISDKNode::missionWpUploadCallback(
     uploadAck = vehicle->missionManager->wpMission->uploadIndexData(
       &wpData, WAIT_TIMEOUT);
 
-    ROS_DEBUG("uploaded waypoint lat: %f lon: %f alt: %f", waypoint.latitude,
+    RCLCPP_DEBUG(this->get_logger(), "uploaded waypoint lat: %f lon: %f alt: %f", waypoint.latitude,
               waypoint.longitude, waypoint.altitude);
 
     response->cmd_set  = (int)uploadAck.ack.info.cmd_set;
@@ -111,7 +111,7 @@ DJISDKNode::missionWpUploadCallback(
       response->result = true;
     }
 
-    ROS_INFO("uploaded the %dth waypoint\n", (wpData.index + 1));
+    RCLCPP_INFO(this->get_logger(), "uploaded the %dth waypoint\n", (wpData.index + 1));
     i += 1;
     sleep(1);
   }
@@ -137,27 +137,27 @@ DJISDKNode::missionWpActionCallback(
   {
     case DJI::OSDK::MISSION_ACTION::START:
       ack = vehicle->missionManager->wpMission->start(WAIT_TIMEOUT);
-      ROS_DEBUG("start waypoint mission");
+      RCLCPP_DEBUG(this->get_logger(), "start waypoint mission");
       break;
     case DJI::OSDK::MISSION_ACTION::STOP:
       ack = vehicle->missionManager->wpMission->stop(WAIT_TIMEOUT);
-      ROS_DEBUG("stop waypoint mission");
+      RCLCPP_DEBUG(this->get_logger(), "stop waypoint mission");
       break;
     case DJI::OSDK::MISSION_ACTION::PAUSE:
       ack = vehicle->missionManager->wpMission->pause(WAIT_TIMEOUT);
-      ROS_DEBUG("pause waypoint mission");
+      RCLCPP_DEBUG(this->get_logger(), "pause waypoint mission");
       break;
     case DJI::OSDK::MISSION_ACTION::RESUME:
       ack = vehicle->missionManager->wpMission->resume(WAIT_TIMEOUT);
-      ROS_DEBUG("resume waypoint mission");
+      RCLCPP_DEBUG(this->get_logger(), "resume waypoint mission");
       break;
     default:
-      ROS_WARN("unknown action specified in MissionWpAction service");
+      RCLCPP_WARN(this->get_logger(), "unknown action specified in MissionWpAction service");
       break;
   }
 
-  ROS_DEBUG("ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", ack.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", ack.data);
 
   response->cmd_set  = (int)ack.info.cmd_set;
   response->cmd_id   = (int)ack.info.cmd_id;
@@ -179,7 +179,7 @@ DJISDKNode::missionWpGetSpeedCallback(
   const dji_sdk::srv::MissionWpGetSpeed::Request::SharedPtr  request,
   dji_sdk::srv::MissionWpGetSpeed::Response::SharedPtr response)
 {
-  ROS_DEBUG("called wpGetSpeedCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called wpGetSpeedCallback");
 
   if (vehicle->missionManager->wpMissionVector.size() > 0)
   {
@@ -191,7 +191,7 @@ DJISDKNode::missionWpGetSpeedCallback(
   }
   else
   {
-    ROS_ERROR("no waypoint mission initiated ");
+    RCLCPP_ERROR(this->get_logger(), "no waypoint mission initiated ");
   }
   // @todo some bug in FC side, need to follow up
   std::cout << "response->speed " << response->speed << std::endl;
@@ -202,7 +202,7 @@ DJISDKNode::missionWpSetSpeedCallback(
   const dji_sdk::srv::MissionWpSetSpeed::Request::SharedPtr  request,
   dji_sdk::srv::MissionWpSetSpeed::Response::SharedPtr response)
 {
-  ROS_DEBUG("called wpSetSpeedCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called wpSetSpeedCallback");
 
   ACK::WayPointVelocity velAck;
 
@@ -233,7 +233,7 @@ DJISDKNode::missionWpGetInfoCallback(
   const dji_sdk::srv::MissionWpGetInfo::Request::SharedPtr  request,
   dji_sdk::srv::MissionWpGetInfo::Response::SharedPtr response)
 {
-  ROS_DEBUG("called missionWpGetInfoCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called missionWpGetInfoCallback");
 
   DJI::OSDK::WayPointInitSettings info;
   if (vehicle->missionManager->wpMissionVector.size() > 0)
@@ -287,7 +287,7 @@ DJISDKNode::missionHpUploadCallback(
   const dji_sdk::srv::MissionHpUpload::Request::SharedPtr  request,
   dji_sdk::srv::MissionHpUpload::Response::SharedPtr response)
 {
-  ROS_DEBUG("called missionHpUploadCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called missionHpUploadCallback");
 
   DJI::OSDK::HotPointSettings* hpInitData = new DJI::OSDK::HotPointSettings();
   hpInitData->latitude   = request->hotpoint_task.latitude * C_PI / 180;
@@ -310,7 +310,7 @@ DJISDKNode::missionHpActionCallback(
   const dji_sdk::srv::MissionHpAction::Request::SharedPtr  request,
   dji_sdk::srv::MissionHpAction::Response::SharedPtr response)
 {
-  ROS_DEBUG("called missionHpActionCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called missionHpActionCallback");
 
   if (vehicle->missionManager->hpMissionVector.size() == 0)
   {
@@ -323,27 +323,27 @@ DJISDKNode::missionHpActionCallback(
   {
     case DJI::OSDK::MISSION_ACTION::START:
       ack = vehicle->missionManager->hpMission->start(WAIT_TIMEOUT);
-      ROS_DEBUG("start hotpoint mission");
+      RCLCPP_DEBUG(this->get_logger(), "start hotpoint mission");
       break;
     case DJI::OSDK::MISSION_ACTION::STOP:
       ack = vehicle->missionManager->hpMission->stop(WAIT_TIMEOUT);
-      ROS_DEBUG("stop hotpoint mission");
+      RCLCPP_DEBUG(this->get_logger(), "stop hotpoint mission");
       break;
     case DJI::OSDK::MISSION_ACTION::PAUSE:
       ack = vehicle->missionManager->hpMission->pause(WAIT_TIMEOUT);
-      ROS_DEBUG("pause hotpoint mission");
+      RCLCPP_DEBUG(this->get_logger(), "pause hotpoint mission");
       break;
     case DJI::OSDK::MISSION_ACTION::RESUME:
       ack = vehicle->missionManager->hpMission->resume(WAIT_TIMEOUT);
-      ROS_DEBUG("resume hotpoint mission");
+      RCLCPP_DEBUG(this->get_logger(), "resume hotpoint mission");
       break;
     default:
-      ROS_WARN("unknown action specified in MissionHpAction service");
+      RCLCPP_WARN(this->get_logger(), "unknown action specified in MissionHpAction service");
       break;
   }
 
-  ROS_DEBUG("ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", ack.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", ack.data);
 
   response->cmd_set  = (int)ack.info.cmd_set;
   response->cmd_id   = (int)ack.info.cmd_id;
@@ -365,7 +365,7 @@ DJISDKNode::missionHpGetInfoCallback(
   const dji_sdk::srv::MissionHpGetInfo::Request::SharedPtr  request,
   dji_sdk::srv::MissionHpGetInfo::Response::SharedPtr response)
 {
-  ROS_DEBUG("called missionHpGetInfoCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called missionHpGetInfoCallback");
 
   DJI::OSDK::HotPointSettings info;
   if (vehicle->missionManager->hpMissionVector.size() > 0)
@@ -374,7 +374,7 @@ DJISDKNode::missionHpGetInfoCallback(
   }
   else
   {
-    ROS_ERROR("no hotpoint mission initiated ");
+    RCLCPP_ERROR(this->get_logger(), "no hotpoint mission initiated ");
   }
 
   response->hotpoint_task.latitude      = info.latitude  * 180.0 / C_PI;
@@ -392,7 +392,7 @@ DJISDKNode::missionHpUpdateYawRateCallback(
   const dji_sdk::srv::MissionHpUpdateYawRate::Request::SharedPtr  request,
   dji_sdk::srv::MissionHpUpdateYawRate::Response::SharedPtr response)
 {
-  ROS_DEBUG("called missionHpUpdateYawRateCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called missionHpUpdateYawRateCallback");
 
   DJI::OSDK::HotpointMission::YawRate yawRate;
   yawRate.yawRate   = request->yaw_rate;
@@ -406,11 +406,11 @@ DJISDKNode::missionHpUpdateYawRateCallback(
   }
   else
   {
-    ROS_ERROR("no hotpoint mission initiated ");
+    RCLCPP_ERROR(this->get_logger(), "no hotpoint mission initiated ");
   }
 
-  ROS_DEBUG("ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", ack.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", ack.data);
 
   response->cmd_set  = (int)ack.info.cmd_set;
   response->cmd_id   = (int)ack.info.cmd_id;
@@ -432,7 +432,7 @@ DJISDKNode::missionHpResetYawCallback(
   const dji_sdk::srv::MissionHpResetYaw::Request::SharedPtr  request,
   dji_sdk::srv::MissionHpResetYaw::Response::SharedPtr response)
 {
-  ROS_DEBUG("called missionHpResetYawCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called missionHpResetYawCallback");
 
   ACK::ErrorCode ack;
   if (vehicle->missionManager->hpMissionVector.size() > 0)
@@ -441,11 +441,11 @@ DJISDKNode::missionHpResetYawCallback(
   }
   else
   {
-    ROS_ERROR("no hotpoint mission initiated ");
+    RCLCPP_ERROR(this->get_logger(), "no hotpoint mission initiated ");
   }
 
-  ROS_DEBUG("ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", ack.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", ack.data);
 
   response->cmd_set  = (int)ack.info.cmd_set;
   response->cmd_id   = (int)ack.info.cmd_id;
@@ -467,7 +467,7 @@ DJISDKNode::missionHpUpdateRadiusCallback(
   const dji_sdk::srv::MissionHpUpdateRadius::Request::SharedPtr  request,
   dji_sdk::srv::MissionHpUpdateRadius::Response::SharedPtr response)
 {
-  ROS_DEBUG("called missionHpUpdateRadiusCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called missionHpUpdateRadiusCallback");
 
   ACK::ErrorCode ack;
   if (vehicle->missionManager->hpMissionVector.size() > 0)
@@ -477,11 +477,11 @@ DJISDKNode::missionHpUpdateRadiusCallback(
   }
   else
   {
-    ROS_ERROR("no hotpoint mission initiated ");
+    RCLCPP_ERROR(this->get_logger(), "no hotpoint mission initiated ");
   }
 
-  ROS_DEBUG("ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", ack.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", ack.data);
 
   response->cmd_set  = (int)ack.info.cmd_set;
   response->cmd_id   = (int)ack.info.cmd_id;

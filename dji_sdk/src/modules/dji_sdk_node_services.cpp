@@ -15,14 +15,14 @@ void
 DJISDKNode::droneActivationCallback(const dji_sdk::srv::Activation::Request::SharedPtr  request,
                                     dji_sdk::srv::Activation::Response::SharedPtr response)
 {
-  ROS_DEBUG("called droneActivationCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called droneActivationCallback");
 
   //! @note activation arguments should be specified in launch files
   ACK::ErrorCode ack;
   ack = this->activate(this->app_id, this->enc_key);
 
-  ROS_DEBUG("ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", ack.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", ack.data);
 
   response->cmd_set  = (int)ack.info.cmd_set;
   response->cmd_id   = (int)ack.info.cmd_id;
@@ -44,23 +44,23 @@ void
 DJISDKNode::droneArmCallback(const dji_sdk::srv::DroneArmControl::Request::SharedPtr  request,
                              dji_sdk::srv::DroneArmControl::Response::SharedPtr response)
 {
-  ROS_DEBUG("called droneArmCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called droneArmCallback");
 
   ACK::ErrorCode ack;
 
   if (request->arm)
   {
     ack = vehicle->control->armMotors(WAIT_TIMEOUT);
-    ROS_DEBUG("called vehicle->control->armMotors()");
+    RCLCPP_DEBUG(this->get_logger(), "called vehicle->control->armMotors()");
   }
   else
   {
     ack = vehicle->control->disArmMotors(WAIT_TIMEOUT);
-    ROS_DEBUG("called vehicle->control->disArmMotors()");
+    RCLCPP_DEBUG(this->get_logger(), "called vehicle->control->disArmMotors()");
   }
 
-  ROS_DEBUG("ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", ack.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", ack.data);
 
   response->cmd_set  = (int)ack.info.cmd_set;
   response->cmd_id   = (int)ack.info.cmd_id;
@@ -83,22 +83,22 @@ DJISDKNode::sdkCtrlAuthorityCallback(
   dji_sdk::srv::SDKControlAuthority::Response::SharedPtr response)
 {
 
-  ROS_DEBUG("called sdkCtrlAuthorityCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called sdkCtrlAuthorityCallback");
 
   ACK::ErrorCode ack;
   if (request->control_enable)
   {
     ack = vehicle->obtainCtrlAuthority(WAIT_TIMEOUT);
-    ROS_DEBUG("called vehicle->obtainCtrlAuthority");
+    RCLCPP_DEBUG(this->get_logger(), "called vehicle->obtainCtrlAuthority");
   }
   else
   {
     ack = vehicle->releaseCtrlAuthority(WAIT_TIMEOUT);
-    ROS_DEBUG("called vehicle->releaseCtrlAuthority");
+    RCLCPP_DEBUG(this->get_logger(), "called vehicle->releaseCtrlAuthority");
   }
 
-  ROS_DEBUG("ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", ack.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", ack.data);
 
   response->cmd_set  = (int)ack.info.cmd_set;
   response->cmd_id   = (int)ack.info.cmd_id;
@@ -124,8 +124,8 @@ DJISDKNode::setLocalPosRefCallback(const dji_sdk::srv::SetLocalPosRef::Request::
     local_pos_ref_latitude = current_gps_latitude;
     local_pos_ref_longitude = current_gps_longitude;
     local_pos_ref_altitude = current_gps_altitude;
-    ROS_INFO("Local Position reference has been set.");
-    ROS_INFO("MONITOR GPS HEALTH WHEN USING THIS TOPIC");
+    RCLCPP_INFO(this->get_logger(), "Local Position reference has been set.");
+    RCLCPP_INFO(this->get_logger(), "MONITOR GPS HEALTH WHEN USING THIS TOPIC");
     local_pos_ref_set = true;
 
     // Create message to publish to a topic
@@ -139,8 +139,8 @@ DJISDKNode::setLocalPosRefCallback(const dji_sdk::srv::SetLocalPosRef::Request::
   }
   else
   {
-    ROS_INFO("Not enough GPS Satellites. ");
-    ROS_INFO("Cannot set Local Position reference");
+    RCLCPP_INFO(this->get_logger(), "Not enough GPS Satellites. ");
+    RCLCPP_INFO(this->get_logger(), "Cannot set Local Position reference");
     local_pos_ref_set = false;
     response->result = false;
   }
@@ -151,35 +151,35 @@ DJISDKNode::droneTaskCallback(const dji_sdk::srv::DroneTaskControl::Request::Sha
                               dji_sdk::srv::DroneTaskControl::Response::SharedPtr response)
 {
 
-  ROS_DEBUG("called droneTaskCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called droneTaskCallback");
 
   ACK::ErrorCode ack;
   if (request->task == 4)
   {
     // takeoff
     ack = vehicle->control->takeoff(WAIT_TIMEOUT);
-    ROS_DEBUG("called vehicle->control->takeoff()");
+    RCLCPP_DEBUG(this->get_logger(), "called vehicle->control->takeoff()");
   }
   else if (request->task == 6)
   {
     // landing
     ack = vehicle->control->land(WAIT_TIMEOUT);
-    ROS_DEBUG("called vehicle->control->land()");
+    RCLCPP_DEBUG(this->get_logger(), "called vehicle->control->land()");
   }
   else if (request->task == 1)
   {
     // gohome
     ack = vehicle->control->goHome(WAIT_TIMEOUT);
-    ROS_DEBUG("called vehicle->control->goHome()");
+    RCLCPP_DEBUG(this->get_logger(), "called vehicle->control->goHome()");
   }
   else
   {
-    ROS_WARN("unknown request task in droneTaskCallback");
-    response.result = false;
+    RCLCPP_WARN(this->get_logger(), "unknown request task in droneTaskCallback");
+    response->result = false;
   }
 
-  ROS_DEBUG("ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
-  ROS_DEBUG("ack.data: %i", ack.data);
+  RCLCPP_DEBUG(this->get_logger(), "ack.info: set=%i id=%i", ack.info.cmd_set, ack.info.cmd_id);
+  RCLCPP_DEBUG(this->get_logger(), "ack.data: %i", ack.data);
 
   response->cmd_set  = (int)ack.info.cmd_set;
   response->cmd_id   = (int)ack.info.cmd_id;
@@ -200,7 +200,7 @@ void
 DJISDKNode::cameraActionCallback(const dji_sdk::srv::CameraAction::Request::SharedPtr  request,
                                  dji_sdk::srv::CameraAction::Response::SharedPtr response)
 {
-  ROS_DEBUG("called cameraActionCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called cameraActionCallback");
 
   if (request->camera_action == 0)
   {
@@ -228,7 +228,7 @@ void
 DJISDKNode::MFIOConfigCallback(const dji_sdk::srv::MFIOConfig::Request::SharedPtr  request,
                                dji_sdk::srv::MFIOConfig::Response::SharedPtr response)
 {
-  ROS_DEBUG("called MFIOConfigCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called MFIOConfigCallback");
 
   vehicle->mfio->config((MFIO::MODE)request->mode,
                         (MFIO::CHANNEL)request->channel,
@@ -240,7 +240,7 @@ void
 DJISDKNode::MFIOSetValueCallback(const dji_sdk::srv::MFIOSetValue::Request::SharedPtr  request,
                                  dji_sdk::srv::MFIOSetValue::Response::SharedPtr response)
 {
-  ROS_DEBUG("called MFIOSetValueCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called MFIOSetValueCallback");
 
   vehicle->mfio->setValue((MFIO::CHANNEL)request->channel,
                           (uint32_t)request->init_on_time_us, WAIT_TIMEOUT);
@@ -266,11 +266,11 @@ DJISDKNode::setHardsyncCallback(const dji_sdk::srv::SetHardSync::Request::Shared
   {
     if (400 % (request->frequency) == 0)
     {
-      ROS_INFO("Call setSyncFreq with parameters (freq=%d, tag=%d).",
-               request.frequency, request.tag);
-      vehicle->hardSync->setSyncFreq(request.frequency, request.tag);
-      response.result = true;
-      return true;
+      RCLCPP_INFO(this->get_logger(), "Call setSyncFreq with parameters (freq=%d, tag=%d).",
+               request->frequency, request->tag);
+      vehicle->hardSync->setSyncFreq(request->frequency, request->tag);
+      response->result = true;
+      return;
     }
   }
 
@@ -286,7 +286,7 @@ void DJISDKNode::queryVersionCallback(const dji_sdk::srv::QueryDroneVersion::Req
 
   if(response->version == 0)
   {
-    ROS_INFO("Failed to get a valid Firmware version from drone!");
+    RCLCPP_INFO(this->get_logger(), "Failed to get a valid Firmware version from drone!");
   }
 }
 
@@ -295,7 +295,7 @@ void
 DJISDKNode::stereo240pSubscriptionCallback(const dji_sdk::srv::Stereo240pSubscription::Request::SharedPtr  request,
                                            dji_sdk::srv::Stereo240pSubscription::Response::SharedPtr response)
 {
-  ROS_DEBUG("called stereo240pSubscriptionCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called stereo240pSubscriptionCallback");
 
   if (request->unsubscribe_240p == 1)
   {
@@ -340,7 +340,7 @@ void
 DJISDKNode::stereoDepthSubscriptionCallback(const dji_sdk::srv::StereoDepthSubscription::Request::SharedPtr  request,
                                             dji_sdk::srv::StereoDepthSubscription::Response::SharedPtr response)
 {
-  ROS_DEBUG("called stereoDepthSubscriptionCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called stereoDepthSubscriptionCallback");
 
   if (request->unsubscribe_240p == 1)
   {
@@ -378,7 +378,7 @@ void
 DJISDKNode::stereoVGASubscriptionCallback(const dji_sdk::srv::StereoVGASubscription::Request::SharedPtr  request,
                                           dji_sdk::srv::StereoVGASubscription::Response::SharedPtr response)
 {
-  ROS_DEBUG("called stereoVGASubscriptionCallback");
+  RCLCPP_DEBUG(this->get_logger(), "called stereoVGASubscriptionCallback");
 
   if (request->unsubscribe_vga == 1)
   {

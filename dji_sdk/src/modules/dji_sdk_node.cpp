@@ -55,29 +55,29 @@ DJISDKNode::DJISDKNode()
   //! @note parsing launch file to get environment parameters
   if (!initVehicle())
   {
-    ROS_ERROR("Vehicle initialization failed");
+    RCLCPP_ERROR(this->get_logger(), "Vehicle initialization failed");
   }
 
   else
   {
     if (!initServices())
     {
-      ROS_ERROR("initServices failed");
+      RCLCPP_ERROR(this->get_logger(), "initServices failed");
     }
 
     if (!initFlightControl())
     {
-      ROS_ERROR("initFlightControl failed");
+      RCLCPP_ERROR(this->get_logger(), "initFlightControl failed");
     }
 
     if (!initSubscriber())
     {
-      ROS_ERROR("initSubscriber failed");
+      RCLCPP_ERROR(this->get_logger(), "initSubscriber failed");
     }
 
     if (!initPublisher())
     {
-      ROS_ERROR("initPublisher failed");
+      RCLCPP_ERROR(this->get_logger(), "initPublisher failed");
     }
   }
 }
@@ -102,7 +102,7 @@ DJISDKNode::initVehicle()
 
 #ifdef ADVANCED_SENSING
   enable_advanced_sensing = true;
-  ROS_INFO("Advanced Sensing is Enabled on M210.");
+  RCLCPP_INFO(this->get_logger(), "Advanced Sensing is Enabled on M210.");
 #endif
 
   //! @note currently does not work without thread support
@@ -115,10 +115,10 @@ DJISDKNode::initVehicle()
    */
   if (ACK::getError(this->activate(this->app_id, this->enc_key)))
   {
-    ROS_ERROR("drone activation error");
+    RCLCPP_ERROR(this->get_logger(), "drone activation error");
     return false;
   }
-  ROS_INFO("drone activated");
+  RCLCPP_INFO(this->get_logger(), "drone activated");
 
   // This version of ROS Node works for:
   //    1. A3/N3/M600 with latest FW
@@ -225,7 +225,7 @@ DJISDKNode::activate(int l_app_id, std::string l_enc_key)
   strcpy(testActivateData.encKey, l_enc_key.c_str());
   testActivateData.ID = l_app_id;
 
-  ROS_DEBUG("called vehicle->activate(&testActivateData, WAIT_TIMEOUT)");
+  RCLCPP_DEBUG(this->get_logger(), "called vehicle->activate(&testActivateData, WAIT_TIMEOUT)");
   return vehicle->activate(&testActivateData, WAIT_TIMEOUT);
 }
 
@@ -361,7 +361,7 @@ DJISDKNode::initPublisher()
   if (telemetry_from_fc == USE_BROADCAST)
   {
     ACK::ErrorCode broadcast_set_freq_ack;
-    ROS_INFO("Use legacy data broadcast to get telemetry data!");
+    RCLCPP_INFO(this->get_logger(), "Use legacy data broadcast to get telemetry data!");
 
     uint8_t defaultFreq[16];
 
@@ -389,14 +389,14 @@ DJISDKNode::initPublisher()
   }
   else if (telemetry_from_fc == USE_SUBSCRIBE)
   {
-    ROS_INFO("Use data subscription to get telemetry data!");
+    RCLCPP_INFO(this->get_logger(), "Use data subscription to get telemetry data!");
     if(!align_time_with_FC)
     {
-      ROS_INFO("align_time_with_FC set to false. We will use ros time to time stamp messages!");
+      RCLCPP_INFO(this->get_logger(), "align_time_with_FC set to false. We will use ros time to time stamp messages!");
     }
     else
     {
-      ROS_INFO("align_time_with_FC set to true. We will time stamp messages based on flight controller time!");
+      RCLCPP_INFO(this->get_logger(), "align_time_with_FC set to true. We will time stamp messages based on flight controller time!");
     }
 
     // Extra topics that is only available from subscription
@@ -457,7 +457,7 @@ DJISDKNode::initDataSubscribeFromFC()
     if (ACK::getError(ack))
     {
       vehicle->subscribe->removePackage(PACKAGE_ID_100HZ, WAIT_TIMEOUT);
-      ROS_ERROR("Failed to start 100Hz package");
+      RCLCPP_ERROR(this->get_logger(), "Failed to start 100Hz package");
       return false;
     }
     else
@@ -509,7 +509,7 @@ DJISDKNode::initDataSubscribeFromFC()
     if (ACK::getError(ack))
     {
       vehicle->subscribe->removePackage(PACKAGE_ID_50HZ, WAIT_TIMEOUT);
-      ROS_ERROR("Failed to start 50Hz package");
+      RCLCPP_ERROR(this->get_logger(), "Failed to start 50Hz package");
       return false;
     }
     else
@@ -533,7 +533,7 @@ DJISDKNode::initDataSubscribeFromFC()
     if (ack.data == ErrorCode::SubscribeACK::SOURCE_DEVICE_OFFLINE)
     {
       rtkSupport = false;
-      ROS_INFO("Flight Controller does not support RTK");
+      RCLCPP_INFO(this->get_logger(), "Flight Controller does not support RTK");
     }
     else
     {
@@ -592,7 +592,7 @@ DJISDKNode::initDataSubscribeFromFC()
     if (ACK::getError(ack))
     {
       vehicle->subscribe->removePackage(PACKAGE_ID_5HZ, WAIT_TIMEOUT);
-      ROS_ERROR("Failed to start 5hz package");
+      RCLCPP_ERROR(this->get_logger(), "Failed to start 5hz package");
       return false;
     }
     else
@@ -614,7 +614,7 @@ DJISDKNode::initDataSubscribeFromFC()
     if(ACK::getError(ack))
     {
       vehicle->subscribe->removePackage(PACKAGE_ID_400HZ, WAIT_TIMEOUT);
-      ROS_ERROR("Failed to start 400Hz package");
+      RCLCPP_ERROR(this->get_logger(), "Failed to start 400Hz package");
       return false;
     }
     else
@@ -650,17 +650,17 @@ bool DJISDKNode::validateSerialDevice(LinuxSerialDevice* serialDevice)
   uint8_t buf[BUFFER_SIZE];
   if (!serialDevice->setSerialPureTimedRead())
   {
-    ROS_ERROR("Failed to set up port for timed read.\n");
+    RCLCPP_ERROR(this->get_logger(), "Failed to set up port for timed read.\n");
     return (false);
   };
   usleep(100000);
   if(serialDevice->serialRead(buf, BUFFER_SIZE))
   {
-    ROS_INFO("Succeeded to read from serial device");
+    RCLCPP_INFO(this->get_logger(), "Succeeded to read from serial device");
   }
   else
   {
-    ROS_ERROR("Failed to read from serial device. The Onboard SDK is not communicating with your drone.");
+    RCLCPP_ERROR(this->get_logger(), "Failed to read from serial device. The Onboard SDK is not communicating with your drone.");
     return (false);
   }
 

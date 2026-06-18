@@ -2,6 +2,7 @@
 #include <sensor_msgs/msg/joy.hpp>
 #include <dji_telemetry.hpp>
 #include <tf2/utils.hpp>
+#include <cassert>
 
 #define _TICK2ROSTIME(tick) (ros::Duration((double)(tick) / 1000.0))
 
@@ -209,7 +210,7 @@ DJISDKNode::publish5HzData(Vehicle *vehicle, RecvContainer recvFrame,
   DJISDKNode *p = (DJISDKNode *)userData;
 
   uint8_t* data = recvFrame.recvData.raw_ack_array;
-  ROS_ASSERT(DJISDKNode::PACKAGE_ID_5HZ == *data );
+  assert(DJISDKNode::PACKAGE_ID_5HZ == *data );
 
   data++;
   Telemetry::TimeStamp packageTimeStamp = * (reinterpret_cast<Telemetry::TimeStamp *>(data));
@@ -307,7 +308,7 @@ DJISDKNode::publish50HzData(Vehicle* vehicle, RecvContainer recvFrame,
   DJISDKNode* p = (DJISDKNode*)userData;
 
   uint8_t* data = recvFrame.recvData.raw_ack_array;
-  ROS_ASSERT(DJISDKNode::PACKAGE_ID_50HZ == *data );
+  assert(DJISDKNode::PACKAGE_ID_50HZ == *data );
   data++;
   Telemetry::TimeStamp packageTimeStamp = * (reinterpret_cast<Telemetry::TimeStamp *>(data));
 
@@ -536,7 +537,7 @@ DJISDKNode::publish100HzData(Vehicle *vehicle, RecvContainer recvFrame,
   DJISDKNode *p = (DJISDKNode *)userData;
 
   uint8_t* data = recvFrame.recvData.raw_ack_array;
-  ROS_ASSERT(DJISDKNode::PACKAGE_ID_100HZ == *data );
+  assert(DJISDKNode::PACKAGE_ID_100HZ == *data );
   data++;
   Telemetry::TimeStamp packageTimeStamp = * (reinterpret_cast<Telemetry::TimeStamp *>(data));
 
@@ -622,7 +623,7 @@ DJISDKNode::publish400HzData(Vehicle *vehicle, RecvContainer recvFrame,
   DJISDKNode *p = (DJISDKNode *) userData;
 
   uint8_t* data = recvFrame.recvData.raw_ack_array;
-  ROS_ASSERT(DJISDKNode::PACKAGE_ID_400HZ == *data );
+  assert(DJISDKNode::PACKAGE_ID_400HZ == *data );
 
   data++;
   Telemetry::TimeStamp packageTimeStamp = * (reinterpret_cast<Telemetry::TimeStamp *>(data));
@@ -702,7 +703,7 @@ void DJISDKNode::alignRosTimeWithFlightController(ros::Time now_time, uint32_t t
   {
     base_time = now_time - _TICK2ROSTIME(tick);
     curr_align_state = ALIGNING;
-    ROS_INFO("[dji_sdk] Start time alignment ...");
+    RCLCPP_INFO(this->get_logger(), "[dji_sdk] Start time alignment ...");
     return;
   }
 
@@ -710,7 +711,7 @@ void DJISDKNode::alignRosTimeWithFlightController(ros::Time now_time, uint32_t t
   {
     static int aligned_count = 0;
     static int retry_count = 0;
-    ROS_INFO_THROTTLE(1.0, "[dji_sdk] Aliging time...");
+    RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 1000, "[dji_sdk] Aliging time...");
 
     double dt = std::fabs((now_time - (base_time + _TICK2ROSTIME(tick))).toSec());
 
@@ -721,7 +722,7 @@ void DJISDKNode::alignRosTimeWithFlightController(ros::Time now_time, uint32_t t
     else if(aligned_count > 0)
     {
       base_time = now_time - _TICK2ROSTIME(tick);
-      ROS_INFO("[dji_sdk] ***** Time difference out of bound after %d samples, retried %d times, dt=%.3f... *****",
+      RCLCPP_INFO(this->get_logger(), "[dji_sdk] ***** Time difference out of bound after %d samples, retried %d times, dt=%.3f... *****",
                aligned_count, retry_count, dt);
       aligned_count = 0;
       retry_count++;
@@ -729,7 +730,7 @@ void DJISDKNode::alignRosTimeWithFlightController(ros::Time now_time, uint32_t t
 
     if(aligned_count > STABLE_ALIGNMENT_COUNT)
     {
-      ROS_INFO("[dji_sdk] ***** Time alignment successful! *****");
+      RCLCPP_INFO(this->get_logger(), "[dji_sdk] ***** Time alignment successful! *****");
       curr_align_state = ALIGNED;
     }
 
