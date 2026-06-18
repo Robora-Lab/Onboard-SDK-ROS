@@ -1,18 +1,19 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.10)
 project(dji_sdk)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  geometry_msgs
-  message_generation
-  nav_msgs
-  roscpp
-  rospy
-  std_msgs
-  sensor_msgs
-)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(nmea_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake-modules")
 find_package(djiosdk-core QUIET)
@@ -64,83 +65,54 @@ catkin_python_setup()
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  FCTimeInUTC.msg
-  GPSUTC.msg
-  Gimbal.msg
-  Waypoint.msg
-  WaypointList.msg
-  MobileData.msg
-  PayloadData.msg
-  MissionWaypointAction.msg
-  MissionWaypoint.msg
-  MissionWaypointTask.msg
-  MissionHotpointTask.msg
-  FlightAnomaly.msg
-  VOPosition.msg
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/FCTimeInUTC.msg"
+  "msg/GPSUTC.msg"
+  "msg/Gimbal.msg"
+  "msg/Waypoint.msg"
+  "msg/WaypointList.msg"
+  "msg/MobileData.msg"
+  "msg/PayloadData.msg"
+  "msg/MissionWaypointAction.msg"
+  "msg/MissionWaypoint.msg"
+  "msg/MissionWaypointTask.msg"
+  "msg/MissionHotpointTask.msg"
+  "msg/FlightAnomaly.msg"
+  "msg/VOPosition.msg"
+  "srv/Activation.srv"
+  "srv/CameraAction.srv"
+  "srv/DroneTaskControl.srv"
+  "srv/SDKControlAuthority.srv"
+  "srv/SetLocalPosRef.srv"
+  "srv/MFIOConfig.srv"
+  "srv/MFIOSetValue.srv"
+  "srv/DroneArmControl.srv"
+  "srv/MissionStatus.srv"
+  "srv/MissionWpAction.srv"
+  "srv/MissionHpAction.srv"
+  "srv/MissionWpUpload.srv"
+  "srv/MissionWpSetSpeed.srv"
+  "srv/MissionWpGetSpeed.srv"
+  "srv/MissionWpGetInfo.srv"
+  "srv/MissionHpUpload.srv"
+  "srv/MissionHpGetInfo.srv"
+  "srv/MissionHpUpdateYawRate.srv"
+  "srv/MissionHpUpdateRadius.srv"
+  "srv/MissionHpResetYaw.srv"
+  "srv/SendMobileData.srv"
+  "srv/SendPayloadData.srv"
+  "srv/SetHardSync.srv"
+  "srv/QueryDroneVersion.srv"
+  "srv/Stereo240pSubscription.srv"
+  "srv/StereoVGASubscription.srv"
+  "srv/StereoDepthSubscription.srv"
+  "srv/SetupCameraStream.srv"
+  DEPENDENCIES builtin_interfaces std_msgs
 )
 
-## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  Activation.srv
-  CameraAction.srv
-  DroneTaskControl.srv
-  SDKControlAuthority.srv
-  SetLocalPosRef.srv
-  MFIOConfig.srv
-  MFIOSetValue.srv
-  DroneArmControl.srv
-  MissionStatus.srv
-  MissionWpAction.srv
-  MissionHpAction.srv
-  MissionWpUpload.srv
-  MissionWpSetSpeed.srv
-  MissionWpGetSpeed.srv
-  MissionWpGetInfo.srv
-  MissionHpUpload.srv
-  MissionHpGetInfo.srv
-  MissionHpUpdateYawRate.srv
-  MissionHpUpdateRadius.srv
-  MissionHpResetYaw.srv
-  SendMobileData.srv
-  SendPayloadData.srv
-  SetHardSync.srv
-  QueryDroneVersion.srv
-  Stereo240pSubscription.srv
-  StereoVGASubscription.srv
-  StereoDepthSubscription.srv
-  SetupCameraStream.srv
-)
-
-## Generate added messages and services with any dependencies listed here
-generate_messages(
-  DEPENDENCIES
-  geometry_msgs
-  nav_msgs
-  std_msgs
-  sensor_msgs
-)
-
-###################################
-## catkin specific configuration ##
-###################################
-## The catkin_package macro generates cmake config files for your package
-## Declare things to be passed to dependent projects
-## INCLUDE_DIRS: uncomment this if you package contains header files
-## LIBRARIES: libraries you create in this project that dependent projects also need
-## CATKIN_DEPENDS: catkin_packages dependent projects also need
-## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-  INCLUDE_DIRS include
-  CATKIN_DEPENDS
-        message_runtime
-        geometry_msgs
-        nav_msgs
-        std_msgs
-        nmea_msgs
-)
+ament_export_dependencies(rosidl_default_runtime)
+rosidl_get_typesupport_target(cpp_typesupport_target
+  ${PROJECT_NAME} rosidl_typesupport_cpp)
 
 ###########
 ## Build ##
@@ -152,7 +124,6 @@ catkin_package(
 include_directories(
   include
   ${DJIOSDK_INCLUDE_DIRS}
-  ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -173,15 +144,8 @@ add_executable(dji_sdk_node
   src/modules/dji_sdk_node_payload_comm.cpp
   src/modules/dji_sdk_node_time_sync.cpp)
 
-## Add cmake target dependencies of the executable/library
-## as an example, message headers may need to be generated before nodes
-add_dependencies(dji_sdk_node
-  dji_sdk_generate_messages_cpp)
-
-## Specify libraries to link a library or executable target against
 target_link_libraries(dji_sdk_node
-  ${catkin_LIBRARIES}
-  ${DJIOSDK_LIBRARIES}
+  PUBLIC rclcpp::rclcpp geometry_msgs::geometry_msgs sensor_msgs::sensor_msgs std_msgs::std_msgs nmea_msgs::nmea_msgs tf2::tf2 ${cpp_typesupport_target} ${DJIOSDK_LIBRARIES}
 )
 
 #############
@@ -227,3 +191,4 @@ install(DIRECTORY launch
 # )
 
 
+ament_package()
