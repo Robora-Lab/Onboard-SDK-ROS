@@ -150,85 +150,85 @@ private:
     const geometry_msgs::msg::Vector3Stamped msg);
 
   //! general service callbacks
-  bool droneActivationCallback(dji_sdk::Activation::Request&  request,
-                               dji_sdk::Activation::Response& response);
-  bool sdkCtrlAuthorityCallback(
-    dji_sdk::SDKControlAuthority::Request&  request,
-    dji_sdk::SDKControlAuthority::Response& response);
+  void droneActivationCallback(const dji_sdk::srv::Activation::Request::SharedPtr  request,
+                               dji_sdk::srv::Activation::Response::SharedPtr response);
+  void sdkCtrlAuthorityCallback(const 
+    dji_sdk::srv::SDKControlAuthority::Request::SharedPtr  request,
+    dji_sdk::srv::SDKControlAuthority::Response::SharedPtr response);
 
-  bool setLocalPosRefCallback(
-      dji_sdk::SetLocalPosRef::Request&  request,
-      dji_sdk::SetLocalPosRef::Response& response);
+  void setLocalPosRefCallback(const 
+      dji_sdk::srv::SetLocalPosRef::Request::SharedPtr  request,
+      dji_sdk::srv::SetLocalPosRef::Response::SharedPtr response);
   //! control service callbacks
-  bool droneArmCallback(dji_sdk::DroneArmControl::Request&  request,
-                        dji_sdk::DroneArmControl::Response& response);
-  bool droneTaskCallback(dji_sdk::DroneTaskControl::Request&  request,
-                         dji_sdk::DroneTaskControl::Response& response);
+  void droneArmCallback(const dji_sdk::srv::DroneArmControl::Request::SharedPtr  request,
+                        dji_sdk::srv::DroneArmControl::Response::SharedPtr response);
+  void droneTaskCallback(const dji_sdk::srv::DroneTaskControl::Request::SharedPtr  request,
+                         dji_sdk::srv::DroneTaskControl::Response::SharedPtr response);
 
   //! Mobile Data Service
-  bool sendToMobileCallback(dji_sdk::SendMobileData::Request&  request,
-                            dji_sdk::SendMobileData::Response& response);
+  void sendToMobileCallback(const dji_sdk::srv::SendMobileData::Request::SharedPtr  request,
+                            dji_sdk::srv::SendMobileData::Response::SharedPtr response);
   //! Payload Data Service
-  bool sendToPayloadCallback(dji_sdk::SendPayloadData::Request& request,
-                             dji_sdk::SendPayloadData::Response& response);
+  void sendToPayloadCallback(const dji_sdk::srv::SendPayloadData::Request::SharedPtr request,
+                             dji_sdk::srv::SendPayloadData::Response::SharedPtr response);
   //! Query Drone FW version
-  bool queryVersionCallback(dji_sdk::QueryDroneVersion::Request& request,
-                            dji_sdk::QueryDroneVersion::Response& response);
+  void queryVersionCallback(const dji_sdk::srv::QueryDroneVersion::Request::SharedPtr request,
+                            dji_sdk::srv::QueryDroneVersion::Response::SharedPtr response);
 
-  bool cameraActionCallback(dji_sdk::CameraAction::Request&  request,
-                            dji_sdk::CameraAction::Response& response);
+  void cameraActionCallback(const dji_sdk::srv::CameraAction::Request::SharedPtr  request,
+                            dji_sdk::srv::CameraAction::Response::SharedPtr response);
   //! mfio service callbacks
-  bool MFIOConfigCallback(dji_sdk::MFIOConfig::Request&  request,
-                          dji_sdk::MFIOConfig::Response& response);
-  bool MFIOSetValueCallback(dji_sdk::MFIOSetValue::Request&  request,
-                            dji_sdk::MFIOSetValue::Response& response);
+  void MFIOConfigCallback(const dji_sdk::srv::MFIOConfig::Request::SharedPtr  request,
+                          dji_sdk::srv::MFIOConfig::Response::SharedPtr response);
+  void MFIOSetValueCallback(const dji_sdk::srv::MFIOSetValue::Request::SharedPtr  request,
+                            dji_sdk::srv::MFIOSetValue::Response::SharedPtr response);
   //! mission service callbacks
   // mission manager
-  bool missionStatusCallback(dji_sdk::MissionStatus::Request&  request,
-                             dji_sdk::MissionStatus::Response& response);
+  void missionStatusCallback(const dji_sdk::srv::MissionStatus::Request::SharedPtr  request,
+                             dji_sdk::srv::MissionStatus::Response::SharedPtr response);
   // waypoint mission
-  bool missionWpUploadCallback(dji_sdk::MissionWpUpload::Request&  request,
-                               dji_sdk::MissionWpUpload::Response& response);
-  bool missionWpActionCallback(dji_sdk::MissionWpAction::Request&  request,
-                               dji_sdk::MissionWpAction::Response& response);
-  bool missionWpGetInfoCallback(dji_sdk::MissionWpGetInfo::Request&  request,
-                                dji_sdk::MissionWpGetInfo::Response& response);
-  bool missionWpGetSpeedCallback(
-    dji_sdk::MissionWpGetSpeed::Request&  request,
-    dji_sdk::MissionWpGetSpeed::Response& response);
-  bool missionWpSetSpeedCallback(
-    dji_sdk::MissionWpSetSpeed::Request&  request,
-    dji_sdk::MissionWpSetSpeed::Response& response);
+  void missionWpUploadCallback(const dji_sdk::srv::MissionWpUpload::Request::SharedPtr  request,
+                               dji_sdk::srv::MissionWpUpload::Response::SharedPtr response);
+  void missionWpActionCallback(const dji_sdk::srv::MissionWpAction::Request::SharedPtr  request,
+                               dji_sdk::srv::MissionWpAction::Response::SharedPtr response);
+  void missionWpGetInfoCallback(const dji_sdk::srv::MissionWpGetInfo::Request::SharedPtr  request,
+                                dji_sdk::srv::MissionWpGetInfo::Response::SharedPtr response);
+  void missionWpGetSpeedCallback(const 
+    dji_sdk::srv::MissionWpGetSpeed::Request::SharedPtr  request,
+    dji_sdk::srv::MissionWpGetSpeed::Response::SharedPtr response);
+  void missionWpSetSpeedCallback(const 
+    dji_sdk::srv::MissionWpSetSpeed::Request::SharedPtr  request,
+    dji_sdk::srv::MissionWpSetSpeed::Response::SharedPtr response);
   // hotpoint mission
-  bool missionHpUploadCallback(dji_sdk::MissionHpUpload::Request&  request,
-                               dji_sdk::MissionHpUpload::Response& response);
-  bool missionHpActionCallback(dji_sdk::MissionHpAction::Request&  request,
-                               dji_sdk::MissionHpAction::Response& response);
-  bool missionHpGetInfoCallback(dji_sdk::MissionHpGetInfo::Request&  request,
-                                dji_sdk::MissionHpGetInfo::Response& response);
-  bool missionHpUpdateYawRateCallback(
-    dji_sdk::MissionHpUpdateYawRate::Request&  request,
-    dji_sdk::MissionHpUpdateYawRate::Response& response);
-  bool missionHpResetYawCallback(
-    dji_sdk::MissionHpResetYaw::Request&  request,
-    dji_sdk::MissionHpResetYaw::Response& response);
-  bool missionHpUpdateRadiusCallback(
-    dji_sdk::MissionHpUpdateRadius::Request&  request,
-    dji_sdk::MissionHpUpdateRadius::Response& response);
+  void missionHpUploadCallback(const dji_sdk::srv::MissionHpUpload::Request::SharedPtr  request,
+                               dji_sdk::srv::MissionHpUpload::Response::SharedPtr response);
+  void missionHpActionCallback(const dji_sdk::srv::MissionHpAction::Request::SharedPtr  request,
+                               dji_sdk::srv::MissionHpAction::Response::SharedPtr response);
+  void missionHpGetInfoCallback(const dji_sdk::srv::MissionHpGetInfo::Request::SharedPtr  request,
+                                dji_sdk::srv::MissionHpGetInfo::Response::SharedPtr response);
+  void missionHpUpdateYawRateCallback(const 
+    dji_sdk::srv::MissionHpUpdateYawRate::Request::SharedPtr  request,
+    dji_sdk::srv::MissionHpUpdateYawRate::Response::SharedPtr response);
+  void missionHpResetYawCallback(const 
+    dji_sdk::srv::MissionHpResetYaw::Request::SharedPtr  request,
+    dji_sdk::srv::MissionHpResetYaw::Response::SharedPtr response);
+  void missionHpUpdateRadiusCallback(const 
+    dji_sdk::srv::MissionHpUpdateRadius::Request::SharedPtr  request,
+    dji_sdk::srv::MissionHpUpdateRadius::Response::SharedPtr response);
   //! hard sync service callback
-  bool setHardsyncCallback(dji_sdk::SetHardSync::Request&  request,
-                           dji_sdk::SetHardSync::Response& response);
+  void setHardsyncCallback(const dji_sdk::srv::SetHardSync::Request::SharedPtr  request,
+                           dji_sdk::srv::SetHardSync::Response::SharedPtr response);
 
 #ifdef ADVANCED_SENSING
   //! stereo image service callback
-  bool stereo240pSubscriptionCallback(dji_sdk::Stereo240pSubscription::Request&  request,
-                                      dji_sdk::Stereo240pSubscription::Response& response);
-  bool stereoDepthSubscriptionCallback(dji_sdk::StereoDepthSubscription::Request&  request,
-                                       dji_sdk::StereoDepthSubscription::Response& response);
-  bool stereoVGASubscriptionCallback(dji_sdk::StereoVGASubscription::Request&  request,
-                                     dji_sdk::StereoVGASubscription::Response& response);
-  bool setupCameraStreamCallback(dji_sdk::SetupCameraStream::Request&  request,
-                                 dji_sdk::SetupCameraStream::Response& response);
+  void stereo240pSubscriptionCallback(const dji_sdk::srv::Stereo240pSubscription::Request::SharedPtr  request,
+                                      dji_sdk::srv::Stereo240pSubscription::Response::SharedPtr response);
+  void stereoDepthSubscriptionCallback(const dji_sdk::srv::StereoDepthSubscription::Request::SharedPtr  request,
+                                       dji_sdk::srv::StereoDepthSubscription::Response::SharedPtr response);
+  void stereoVGASubscriptionCallback(const dji_sdk::srv::StereoVGASubscription::Request::SharedPtr  request,
+                                     dji_sdk::srv::StereoVGASubscription::Response::SharedPtr response);
+  void setupCameraStreamCallback(const dji_sdk::srv::SetupCameraStream::Request::SharedPtr  request,
+                                 dji_sdk::srv::SetupCameraStream::Response::SharedPtr response);
 #endif
 
   //! data broadcast callback
@@ -300,48 +300,48 @@ private:
   //! OSDK core
   Vehicle* vehicle;
   //! general service servers
-  ros::ServiceServer drone_activation_server;
-  ros::ServiceServer sdk_ctrlAuthority_server;
-  ros::ServiceServer camera_action_server;
+  rclcpp::Service<dji_sdk::srv::Activation>::SharedPtr drone_activation_server;
+  rclcpp::Service<dji_sdk::srv::SDKControlAuthority>::SharedPtr sdk_ctrlAuthority_server;
+  rclcpp::Service<dji_sdk::srv::CameraAction>::SharedPtr camera_action_server;
   //! flight control service servers
-  ros::ServiceServer drone_arm_server;
-  ros::ServiceServer drone_task_server;
+  rclcpp::Service<dji_sdk::srv::DroneArmControl>::SharedPtr drone_arm_server;
+  rclcpp::Service<dji_sdk::srv::DroneTaskControl>::SharedPtr drone_task_server;
   //! mfio service servers
-  ros::ServiceServer mfio_config_server;
-  ros::ServiceServer mfio_set_value_server;
+  rclcpp::Service<dji_sdk::srv::MFIOConfig>::SharedPtr mfio_config_server;
+  rclcpp::Service<dji_sdk::srv::MFIOSetValue>::SharedPtr mfio_set_value_server;
   //! mission service servers
   // mission manager
-  ros::ServiceServer mission_status_server;
+  rclcpp::Service<dji_sdk::srv::MissionStatus>::SharedPtr mission_status_server;
   // waypoint mission
-  ros::ServiceServer waypoint_upload_server;
-  ros::ServiceServer waypoint_action_server;
-  ros::ServiceServer waypoint_getInfo_server;
-  ros::ServiceServer waypoint_getSpeed_server;
-  ros::ServiceServer waypoint_setSpeed_server;
+  rclcpp::Service<dji_sdk::srv::MissionWpUpload>::SharedPtr waypoint_upload_server;
+  rclcpp::Service<dji_sdk::srv::MissionWpAction>::SharedPtr waypoint_action_server;
+  rclcpp::Service<dji_sdk::srv::MissionWpGetInfo>::SharedPtr waypoint_getInfo_server;
+  rclcpp::Service<dji_sdk::srv::MissionWpGetSpeed>::SharedPtr waypoint_getSpeed_server;
+  rclcpp::Service<dji_sdk::srv::MissionWpSetSpeed>::SharedPtr waypoint_setSpeed_server;
   // hotpoint mission
-  ros::ServiceServer hotpoint_upload_server;
-  ros::ServiceServer hotpoint_action_server;
-  ros::ServiceServer hotpoint_getInfo_server;
-  ros::ServiceServer hotpoint_setSpeed_server;
-  ros::ServiceServer hotpoint_resetYaw_server;
-  ros::ServiceServer hotpoint_setRadius_server;
+  rclcpp::Service<dji_sdk::srv::MissionHpUpload>::SharedPtr hotpoint_upload_server;
+  rclcpp::Service<dji_sdk::srv::MissionHpAction>::SharedPtr hotpoint_action_server;
+  rclcpp::Service<dji_sdk::srv::MissionHpGetInfo>::SharedPtr hotpoint_getInfo_server;
+  rclcpp::Service<dji_sdk::srv::MissionHpUpdateYawRate>::SharedPtr hotpoint_setSpeed_server;
+  rclcpp::Service<dji_sdk::srv::MissionHpResetYaw>::SharedPtr hotpoint_resetYaw_server;
+  rclcpp::Service<dji_sdk::srv::MissionHpUpdateRadius>::SharedPtr hotpoint_setRadius_server;
   // send data to mobile device
-  ros::ServiceServer send_to_mobile_server;
+  rclcpp::Service<dji_sdk::srv::SendMobileData>::SharedPtr send_to_mobile_server;
   // send data to payload device
-  ros::ServiceServer send_to_payload_server;
+  rclcpp::Service<dji_sdk::srv::SendPayloadData>::SharedPtr send_to_payload_server;
   //! hardsync service
-  ros::ServiceServer set_hardsync_server;
+  rclcpp::Service<dji_sdk::srv::SetHardSync>::SharedPtr set_hardsync_server;
   //! Query FW version of FC
-  ros::ServiceServer query_version_server;
+  rclcpp::Service<dji_sdk::srv::QueryDroneVersion>::SharedPtr query_version_server;
   //! Set Local position reference
-  ros::ServiceServer local_pos_ref_server;
+  rclcpp::Service<dji_sdk::srv::SetLocalPosRef>::SharedPtr local_pos_ref_server;
 
 #ifdef ADVANCED_SENSING
   //! stereo image service
-  ros::ServiceServer subscribe_stereo_240p_server;
-  ros::ServiceServer subscribe_stereo_depth_server;
-  ros::ServiceServer subscribe_stereo_vga_server;
-  ros::ServiceServer camera_stream_server;
+  rclcpp::Service<dji_sdk::srv::Stereo240pSubscription>::SharedPtr subscribe_stereo_240p_server;
+  rclcpp::Service<dji_sdk::srv::StereoDepthSubscription>::SharedPtr subscribe_stereo_depth_server;
+  rclcpp::Service<dji_sdk::srv::StereoVGASubscription>::SharedPtr subscribe_stereo_vga_server;
+  rclcpp::Service<dji_sdk::srv::SetupCameraStream>::SharedPtr camera_stream_server;
 #endif
 
   //! flight control subscribers

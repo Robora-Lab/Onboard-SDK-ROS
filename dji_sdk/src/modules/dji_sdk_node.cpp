@@ -146,40 +146,39 @@ DJISDKNode::initVehicle()
 // clang-format off
 bool DJISDKNode::initServices() {
   // Common to A3/N3 and M100
-  drone_activation_server   = nh.advertiseService("dji_sdk/activation",                     &DJISDKNode::droneActivationCallback,        this);
-  drone_arm_server          = nh.advertiseService("dji_sdk/drone_arm_control",              &DJISDKNode::droneArmCallback,               this);
-  drone_task_server         = nh.advertiseService("dji_sdk/drone_task_control",             &DJISDKNode::droneTaskCallback,              this);
-  sdk_ctrlAuthority_server  = nh.advertiseService("dji_sdk/sdk_control_authority",          &DJISDKNode::sdkCtrlAuthorityCallback,       this);
-  camera_action_server      = nh.advertiseService("dji_sdk/camera_action",                  &DJISDKNode::cameraActionCallback,           this);
-  waypoint_upload_server    = nh.advertiseService("dji_sdk/mission_waypoint_upload",        &DJISDKNode::missionWpUploadCallback,        this);
-  waypoint_action_server    = nh.advertiseService("dji_sdk/mission_waypoint_action",        &DJISDKNode::missionWpActionCallback,        this);
-  waypoint_getInfo_server   = nh.advertiseService("dji_sdk/mission_waypoint_getInfo",       &DJISDKNode::missionWpGetInfoCallback,       this);
-  waypoint_getSpeed_server  = nh.advertiseService("dji_sdk/mission_waypoint_getSpeed",      &DJISDKNode::missionWpGetSpeedCallback,      this);
-  waypoint_setSpeed_server  = nh.advertiseService("dji_sdk/mission_waypoint_setSpeed",      &DJISDKNode::missionWpSetSpeedCallback,      this);
-  hotpoint_upload_server    = nh.advertiseService("dji_sdk/mission_hotpoint_upload",        &DJISDKNode::missionHpUploadCallback,        this);
-  hotpoint_action_server    = nh.advertiseService("dji_sdk/mission_hotpoint_action",        &DJISDKNode::missionHpActionCallback,        this);
-  hotpoint_getInfo_server   = nh.advertiseService("dji_sdk/mission_hotpoint_getInfo",       &DJISDKNode::missionHpGetInfoCallback,       this);
-  hotpoint_setSpeed_server  = nh.advertiseService("dji_sdk/mission_hotpoint_updateYawRate", &DJISDKNode::missionHpUpdateYawRateCallback, this);
-  hotpoint_resetYaw_server  = nh.advertiseService("dji_sdk/mission_hotpoint_resetYaw",      &DJISDKNode::missionHpResetYawCallback,      this);
-  hotpoint_setRadius_server = nh.advertiseService("dji_sdk/mission_hotpoint_updateRadius",  &DJISDKNode::missionHpUpdateRadiusCallback,  this);
-  mission_status_server     = nh.advertiseService("dji_sdk/mission_status",                 &DJISDKNode::missionStatusCallback,          this);
-  send_to_mobile_server     = nh.advertiseService("dji_sdk/send_data_to_mobile",            &DJISDKNode::sendToMobileCallback,           this);
-  send_to_payload_server    = nh.advertiseService("dji_sdk/send_data_to_payload",           &DJISDKNode::sendToPayloadCallback,          this);
-  query_version_server      = nh.advertiseService("dji_sdk/query_drone_version",            &DJISDKNode::queryVersionCallback,           this);
-  local_pos_ref_server      = nh.advertiseService("dji_sdk/set_local_pos_ref",              &DJISDKNode::setLocalPosRefCallback,         this);
+  drone_activation_server   = this->create_service<dji_sdk::srv::Activation>("dji_sdk/activation",                     std::bind(&DJISDKNode::droneActivationCallback, this, _1, _2));
+  drone_arm_server          = this->create_service<dji_sdk::srv::DroneArmControl>("dji_sdk/drone_arm_control",              std::bind(&DJISDKNode::droneArmCallback, this, _1, _2));
+  drone_task_server         = this->create_service<dji_sdk::srv::DroneTaskControl>("dji_sdk/drone_task_control",             std::bind(&DJISDKNode::droneTaskCallback, this, _1, _2));
+  sdk_ctrlAuthority_server  = this->create_service<dji_sdk::srv::SDKControlAuthority>("dji_sdk/sdk_control_authority",          std::bind(&DJISDKNode::sdkCtrlAuthorityCallback, this, _1, _2));
+  camera_action_server      = this->create_service<dji_sdk::srv::CameraAction>("dji_sdk/camera_action",                  std::bind(&DJISDKNode::cameraActionCallback, this, _1, _2));
+  waypoint_upload_server    = this->create_service<dji_sdk::srv::MissionWpUpload>("dji_sdk/mission_waypoint_upload",        std::bind(&DJISDKNode::missionWpUploadCallback, this, _1, _2));
+  waypoint_action_server    = this->create_service<dji_sdk::srv::MissionWpAction>("dji_sdk/mission_waypoint_action",        std::bind(&DJISDKNode::missionWpActionCallback, this, _1, _2));
+  waypoint_getInfo_server   = this->create_service<dji_sdk::srv::MissionWpGetInfo>("dji_sdk/mission_waypoint_getInfo",       std::bind(&DJISDKNode::missionWpGetInfoCallback, this, _1, _2));
+  waypoint_getSpeed_server  = this->create_service<dji_sdk::srv::MissionWpGetSpeed>("dji_sdk/mission_waypoint_getSpeed",      std::bind(&DJISDKNode::missionWpGetSpeedCallback, this, _1, _2));
+  waypoint_setSpeed_server  = this->create_service<dji_sdk::srv::MissionWpSetSpeed>("dji_sdk/mission_waypoint_setSpeed",      std::bind(&DJISDKNode::missionWpSetSpeedCallback, this, _1, _2));
+  hotpoint_upload_server    = this->create_service<dji_sdk::srv::MissionHpUpload>("dji_sdk/mission_hotpoint_upload",        std::bind(&DJISDKNode::missionHpUploadCallback, this, _1, _2));
+  hotpoint_action_server    = this->create_service<dji_sdk::srv::MissionHpAction>("dji_sdk/mission_hotpoint_action",        std::bind(&DJISDKNode::missionHpActionCallback, this, _1, _2));
+  hotpoint_getInfo_server   = this->create_service<dji_sdk::srv::MissionHpGetInfo>("dji_sdk/mission_hotpoint_getInfo",       std::bind(&DJISDKNode::missionHpGetInfoCallback, this, _1, _2));
+  hotpoint_setSpeed_server  = this->create_service<dji_sdk::srv::MissionHpUpdateYawRate>("dji_sdk/mission_hotpoint_updateYawRate", std::bind(&DJISDKNode::missionHpUpdateYawRateCallback, this, _1, _2));
+  hotpoint_resetYaw_server  = this->create_service<dji_sdk::srv::MissionHpResetYaw>("dji_sdk/mission_hotpoint_resetYaw",      std::bind(&DJISDKNode::missionHpResetYawCallback, this, _1, _2));
+  hotpoint_setRadius_server = this->create_service<dji_sdk::srv::MissionHpUpdateRadius>("dji_sdk/mission_hotpoint_updateRadius",  std::bind(&DJISDKNode::missionHpUpdateRadiusCallback, this, _1, _2));
+  mission_status_server     = this->create_service<dji_sdk::srv::MissionStatus>("dji_sdk/mission_status",                 std::bind(&DJISDKNode::missionStatusCallback, this, _1, _2));
+  send_to_mobile_server     = this->create_service<dji_sdk::srv::SendMobileData>("dji_sdk/send_data_to_mobile",            std::bind(&DJISDKNode::sendToMobileCallback, this, _1, _2));
+  send_to_payload_server    = this->create_service<dji_sdk::srv::SendPayloadData>("dji_sdk/send_data_to_payload",           std::bind(&DJISDKNode::sendToPayloadCallback, this, _1, _2));
+  query_version_server      = this->create_service<dji_sdk::srv::QueryDroneVersion>("dji_sdk/query_drone_version",            std::bind(&DJISDKNode::queryVersionCallback, this, _1, _2));
+  local_pos_ref_server      = this->create_service<dji_sdk::srv::SetLocalPosRef>("dji_sdk/set_local_pos_ref",              std::bind(&DJISDKNode::setLocalPosRefCallback, this, _1, _2));
 #ifdef ADVANCED_SENSING
-  subscribe_stereo_240p_server  = nh.advertiseService("dji_sdk/stereo_240p_subscription",   &DJISDKNode::stereo240pSubscriptionCallback, this);
-  subscribe_stereo_depth_server = nh.advertiseService("dji_sdk/stereo_depth_subscription",  &DJISDKNode::stereoDepthSubscriptionCallback,this);
-  subscribe_stereo_vga_server   = nh.advertiseService("dji_sdk/stereo_vga_subscription",    &DJISDKNode::stereoVGASubscriptionCallback,  this);
-  camera_stream_server          = nh.advertiseService("dji_sdk/setup_camera_stream",        &DJISDKNode::setupCameraStreamCallback,      this);
+  subscribe_stereo_240p_server  = this->create_service<dji_sdk::srv::Stereo240pSubscription>("dji_sdk/stereo_240p_subscription",   std::bind(&DJISDKNode::stereo240pSubscriptionCallback, this, _1, _2));
+  subscribe_stereo_depth_server = this->create_service<dji_sdk::srv::StereoDepthSubscription>("dji_sdk/stereo_depth_subscription",  std::bind(&DJISDKNode::stereoDepthSubscriptionCallback, this, _1, _2));
+  camera_stream_server          = this->create_service<dji_sdk::srv::SetupCameraStream>("dji_sdk/setup_camera_stream",        std::bind(&DJISDKNode::setupCameraStreamCallback, this, _1, _2));
 #endif
 
   // A3/N3 only
   if(!isM100())
   {
-    set_hardsync_server   = nh.advertiseService("dji_sdk/set_hardsyc", &DJISDKNode::setHardsyncCallback, this);
-    mfio_config_server    = nh.advertiseService("dji_sdk/mfio_config", &DJISDKNode::MFIOConfigCallback, this);
-    mfio_set_value_server = nh.advertiseService("dji_sdk/mfio_set_value", &DJISDKNode::MFIOSetValueCallback, this);
+    set_hardsync_server   = this->create_service<dji_sdk::srv::SetHardSync>("dji_sdk/set_hardsyc", std::bind(&DJISDKNode::setHardsyncCallback, this, _1, _2));
+    mfio_config_server    = this->create_service<dji_sdk::srv::MFIOConfig>("dji_sdk/mfio_config", std::bind(&DJISDKNode::MFIOConfigCallback, this, _1, _2));
+    mfio_set_value_server = this->create_service<dji_sdk::srv::MFIOSetValue>("dji_sdk/mfio_set_value", std::bind(&DJISDKNode::MFIOSetValueCallback, this, _1, _2));
   }
   return true;
 }
