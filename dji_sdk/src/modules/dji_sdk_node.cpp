@@ -242,13 +242,13 @@ DJISDKNode::initSubscriber()
 bool
 DJISDKNode::initPublisher()
 {
-  rc_publisher = nh.advertise<sensor_msgs::Joy>("dji_sdk/rc", 10);
+  rc_publisher = this->create_publisher<sensor_msgs::msg::Joy>("dji_sdk/rc", 10);
 
   attitude_publisher =
-    nh.advertise<geometry_msgs::QuaternionStamped>("dji_sdk/attitude", 10);
+    this->create_publisher<geometry_msgs::msg::QuaternionStamped>("dji_sdk/attitude", 10);
 
   battery_state_publisher =
-    nh.advertise<sensor_msgs::BatteryState>("dji_sdk/battery_state",10);
+    this->create_publisher<sensor_msgs::msg::BatteryState>("dji_sdk/battery_state",10);
 
   /*!
    * - Fused attitude (duplicated from attitude topic)
@@ -256,18 +256,18 @@ DJISDKNode::initPublisher()
    *       Z value is +9.8 when placed on level ground statically
    * - Raw angular velocity (body frame: FLU, rad/s^2)
    */
-  imu_publisher = nh.advertise<sensor_msgs::Imu>("dji_sdk/imu", 10);
+  imu_publisher = this->create_publisher<sensor_msgs::msg::Imu>("dji_sdk/imu", 10);
 
   // Refer to dji_sdk.h for different enums for M100 and A3/N3
   flight_status_publisher =
-    nh.advertise<std_msgs::UInt8>("dji_sdk/flight_status", 10);
+    this->create_publisher<std_msgs::msg::UInt8>("dji_sdk/flight_status", 10);
 
   /*!
    * gps_health needs to be greater than 3 for gps_position and velocity topics
    * to be trusted
    */
   gps_health_publisher =
-    nh.advertise<std_msgs::UInt8>("dji_sdk/gps_health", 10);
+    this->create_publisher<std_msgs::msg::UInt8>("dji_sdk/gps_health", 10);
 
   /*!
    * NavSatFix specs:
@@ -277,7 +277,7 @@ DJISDKNode::initPublisher()
    *   Altitude [m]. Positive is above the WGS 84 ellipsoid
    */
   gps_position_publisher =
-    nh.advertise<sensor_msgs::NavSatFix>("dji_sdk/gps_position", 10);
+    this->create_publisher<sensor_msgs::msg::NavSatFix>("dji_sdk/gps_position", 10);
 
   /*!
    *   x [m]. Positive along navigation frame x axis
@@ -286,72 +286,74 @@ DJISDKNode::initPublisher()
    *   For details about navigation frame, please see telemetry documentation in API reference
   */
   vo_position_publisher =
-          nh.advertise<dji_sdk::VOPosition>("dji_sdk/vo_position", 10);
+          this->create_publisher<dji_sdk::msg::VOPosition>("dji_sdk/vo_position", 10);
   /*!
    * Height above home altitude. It is valid only after drone
    * is armed.
    */
   height_publisher =
-    nh.advertise<std_msgs::Float32>("dji_sdk/height_above_takeoff", 10);
+    this->create_publisher<std_msgs::msg::Float32>("dji_sdk/height_above_takeoff", 10);
 
   velocity_publisher =
-    nh.advertise<geometry_msgs::Vector3Stamped>("dji_sdk/velocity", 10);
+    this->create_publisher<geometry_msgs::msg::Vector3Stamped>("dji_sdk/velocity", 10);
 
   from_mobile_data_publisher =
-    nh.advertise<dji_sdk::MobileData>("dji_sdk/from_mobile_data", 10);
+    this->create_publisher<dji_sdk::msg::MobileData>("dji_sdk/from_mobile_data", 10);
 
   from_payload_data_publisher =
-    nh.advertise<dji_sdk::PayloadData>("dji_sdk/from_payload_data", 10);
+    this->create_publisher<dji_sdk::msg::PayloadData>("dji_sdk/from_payload_data", 10);
 
   // TODO: documentation and proper frame id
   gimbal_angle_publisher =
-    nh.advertise<geometry_msgs::Vector3Stamped>("dji_sdk/gimbal_angle", 10);
+    this->create_publisher<geometry_msgs::msg::Vector3Stamped>("dji_sdk/gimbal_angle", 10);
 
   local_position_publisher =
-      nh.advertise<geometry_msgs::PointStamped>("dji_sdk/local_position", 10);
+      this->create_publisher<geometry_msgs::msg::PointStamped>("dji_sdk/local_position", 10);
 
   local_frame_ref_publisher =
-      nh.advertise<sensor_msgs::NavSatFix>("dji_sdk/local_frame_ref", 10, true);
+      this->create_publisher<sensor_msgs::msg::NavSatFix>("dji_sdk/local_frame_ref", rclcpp::QoS(rclcpp::KeepLast(1))
+    .reliable()
+    .transient_local());
 
   time_sync_nmea_publisher =
-      nh.advertise<nmea_msgs::Sentence>("dji_sdk/time_sync_nmea_msg", 10);
+      this->create_publisher<nmea_msgs::msg::Sentence>("dji_sdk/time_sync_nmea_msg", 10);
 
   time_sync_gps_utc_publisher =
-      nh.advertise<dji_sdk::GPSUTC>("dji_sdk/time_sync_gps_utc", 10);
+      this->create_publisher<dji_sdk::msg::GPSUTC>("dji_sdk/time_sync_gps_utc", 10);
 
   time_sync_fc_utc_publisher =
-      nh.advertise<dji_sdk::FCTimeInUTC>("dji_sdk/time_sync_fc_time_utc", 10);
+      this->create_publisher<dji_sdk::msg::FCTimeInUTC>("dji_sdk/time_sync_fc_time_utc", 10);
 
   time_sync_pps_source_publisher =
-      nh.advertise<std_msgs::String>("dji_sdk/time_sync_pps_source", 10);
+      this->create_publisher<std_msgs::msg::String>("dji_sdk/time_sync_pps_source", 10);
 
 #ifdef ADVANCED_SENSING
   stereo_240p_front_left_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_front_left_images", 10);
+    this->create_publisher<sensor_msgs::msg::Image>("dji_sdk/stereo_240p_front_left_images", 10);
 
   stereo_240p_front_right_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_front_right_images", 10);
+    this->create_publisher<sensor_msgs::msg::Image>("dji_sdk/stereo_240p_front_right_images", 10);
 
   stereo_240p_down_front_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_down_front_images", 10);
+    this->create_publisher<sensor_msgs::msg::Image>("dji_sdk/stereo_240p_down_front_images", 10);
 
   stereo_240p_down_back_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_down_back_images", 10);
+    this->create_publisher<sensor_msgs::msg::Image>("dji_sdk/stereo_240p_down_back_images", 10);
 
   stereo_240p_front_depth_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_240p_front_depth_images", 10);
+    this->create_publisher<sensor_msgs::msg::Image>("dji_sdk/stereo_240p_front_depth_images", 10);
 
   stereo_vga_front_left_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_vga_front_left_images", 10);
+    this->create_publisher<sensor_msgs::msg::Image>("dji_sdk/stereo_vga_front_left_images", 10);
 
   stereo_vga_front_right_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/stereo_vga_front_right_images", 10);
+    this->create_publisher<sensor_msgs::msg::Image>("dji_sdk/stereo_vga_front_right_images", 10);
 
   main_camera_stream_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/main_camera_images", 10);
+    this->create_publisher<sensor_msgs::msg::Image>("dji_sdk/main_camera_images", 10);
 
   fpv_camera_stream_publisher =
-    nh.advertise<sensor_msgs::Image>("dji_sdk/fpv_camera_images", 10);
+    this->create_publisher<sensor_msgs::msg::Image>("dji_sdk/fpv_camera_images", 10);
 #endif
 
 
@@ -401,15 +403,15 @@ DJISDKNode::initPublisher()
 
     // Details can be found in DisplayMode enum in dji_sdk.h
     displaymode_publisher =
-      nh.advertise<std_msgs::UInt8>("dji_sdk/display_mode", 10);
+      this->create_publisher<std_msgs::msg::UInt8>("dji_sdk/display_mode", 10);
 
     angularRate_publisher =
-      nh.advertise<geometry_msgs::Vector3Stamped>("dji_sdk/angular_velocity_fused", 10);
+      this->create_publisher<geometry_msgs::msg::Vector3Stamped>("dji_sdk/angular_velocity_fused", 10);
 
     acceleration_publisher =
-      nh.advertise<geometry_msgs::Vector3Stamped>("dji_sdk/acceleration_ground_fused", 10);
+      this->create_publisher<geometry_msgs::msg::Vector3Stamped>("dji_sdk/acceleration_ground_fused", 10);
 
-    trigger_publisher = nh.advertise<sensor_msgs::TimeReference>("dji_sdk/trigger_time", 10);
+    trigger_publisher = this->create_publisher<sensor_msgs::msg::TimeReference>("dji_sdk/trigger_time", 10);
 
     if (!initDataSubscribeFromFC())
     {
@@ -493,10 +495,10 @@ DJISDKNode::initDataSubscribeFromFC()
 
     // Advertise rc connection status only if this topic is supported by FW
     rc_connection_status_publisher =
-            nh.advertise<std_msgs::UInt8>("dji_sdk/rc_connection_status", 10);
+            this->create_publisher<std_msgs::msg::UInt8>("dji_sdk/rc_connection_status", 10);
 
     flight_anomaly_publisher =
-            nh.advertise<dji_sdk::FlightAnomaly>("dji_sdk/flight_anomaly", 10);
+            this->create_publisher<dji_sdk::msg::FlightAnomaly>("dji_sdk/flight_anomaly", 10);
   }
 
   int nTopic50Hz    = topicList50Hz.size();
@@ -558,19 +560,19 @@ DJISDKNode::initDataSubscribeFromFC()
 
     // Advertise rtk data only when rtk is supported
     rtk_position_publisher =
-            nh.advertise<sensor_msgs::NavSatFix>("dji_sdk/rtk_position", 10);
+            this->create_publisher<sensor_msgs::msg::NavSatFix>("dji_sdk/rtk_position", 10);
 
     rtk_velocity_publisher =
-            nh.advertise<geometry_msgs::Vector3Stamped>("dji_sdk/rtk_velocity", 10);
+            this->create_publisher<geometry_msgs::msg::Vector3Stamped>("dji_sdk/rtk_velocity", 10);
 
     rtk_yaw_publisher =
-            nh.advertise<std_msgs::Int16>("dji_sdk/rtk_yaw", 10);
+            this->create_publisher<std_msgs::msg::Int16>("dji_sdk/rtk_yaw", 10);
 
     rtk_position_info_publisher =
-            nh.advertise<std_msgs::UInt8>("dji_sdk/rtk_info_position", 10);
+            this->create_publisher<std_msgs::msg::UInt8>("dji_sdk/rtk_info_position", 10);
 
     rtk_yaw_info_publisher =
-            nh.advertise<std_msgs::UInt8>("dji_sdk/rtk_info_yaw", 10);
+            this->create_publisher<std_msgs::msg::UInt8>("dji_sdk/rtk_info_yaw", 10);
 
     if(vehicle->getFwVersion() > versionBase33)
     {
@@ -578,7 +580,7 @@ DJISDKNode::initDataSubscribeFromFC()
 
       // Advertise rtk connection only when rtk is supported
       rtk_connection_status_publisher =
-              nh.advertise<std_msgs::UInt8>("dji_sdk/rtk_connection_status", 10);
+              this->create_publisher<std_msgs::msg::UInt8>("dji_sdk/rtk_connection_status", 10);
     }
   }
 

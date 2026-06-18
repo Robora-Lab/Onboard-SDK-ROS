@@ -19,13 +19,13 @@ void DJISDKNode::fromMobileDataCallback(RecvContainer recvFrame) {
   int dataLength = recvFrame.recvInfo.len - OpenProtocol::PackageMin - 2;
   if (dataLength <= 100) {
     DSTATUS( "Received mobile Data of len %d\n", recvFrame.recvInfo.len);
-    dji_sdk::MobileData mobile_data;
+    dji_sdk::msg::MobileData mobile_data;
     mobile_data.data.resize(dataLength);
     for (int i=0; i<dataLength; i++)
     {
       mobile_data.data[i] = recvFrame.recvData.raw_ack_array[i];
     }
-    from_mobile_data_publisher.publish(mobile_data);
+    from_mobile_data_publisher->publish(mobile_data);
   }
 }
 
