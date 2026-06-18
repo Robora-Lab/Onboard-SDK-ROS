@@ -1,18 +1,7 @@
-/** @file dji_sdk_node_publisher.cpp
- *  @version 3.7
- *  @date July, 2018
- *
- *  @brief
- *  Implementation of the publishers of DJISDKNode
- *
- *  @copyright 2018 DJI. All rights reserved.
- *
- */
-
 #include <dji_sdk/dji_sdk_node.h>
-#include <tf/tf.h>
-#include <sensor_msgs/Joy.h>
+#include <sensor_msgs/msg/joy.hpp>
 #include <dji_telemetry.hpp>
+#include <tf2/utils.hpp>
 
 #define _TICK2ROSTIME(tick) (ros::Duration((double)(tick) / 1000.0))
 

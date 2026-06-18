@@ -13,73 +13,75 @@
 #define DJI_SDK_NODE_MAIN_H
 
 //! ROS
-#include <ros/ros.h>
-#include <tf/tf.h>
+#include "rclcpp/rclcpp.hpp"
+#include "tf2/LinearMath/Matrix3x3.hpp"
 
 //! ROS standard msgs
-#include <geometry_msgs/Quaternion.h>
-#include <geometry_msgs/Vector3Stamped.h>
-#include <sensor_msgs/Imu.h>
-#include <sensor_msgs/NavSatFix.h>
-#include <sensor_msgs/Joy.h>
-#include <sensor_msgs/TimeReference.h>
-#include <sensor_msgs/BatteryState.h>
-#include <sensor_msgs/Image.h>
-#include <std_msgs/UInt8.h>
-#include <std_msgs/Int16.h>
-#include <std_msgs/Float32.h>
-#include <std_msgs/String.h>
-#include <nmea_msgs/Sentence.h>
+#include <geometry_msgs/msg/quaternion.hpp>
+#include <geometry_msgs/msg/quaternion_stamped.hpp>
+#include <geometry_msgs/msg/vector3_stamped.hpp>
+#include <geometry_msgs/msg/point_stamped.hpp>
+#include <sensor_msgs/msg/imu.hpp>
+#include <sensor_msgs/msg/nav_sat_fix.hpp>
+#include <sensor_msgs/msg/joy.hpp>
+#include <sensor_msgs/msg/time_reference.hpp>
+#include <sensor_msgs/msg/battery_state.hpp>
+#include <sensor_msgs/msg/image.hpp>
+#include <std_msgs/msg/u_int8.hpp>
+#include <std_msgs/msg/int16.hpp>
+#include <std_msgs/msg/float32.hpp>
+#include <std_msgs/msg/string.hpp>
+#include <nmea_msgs/msg/sentence.hpp>
 
 //! msgs
-#include <dji_sdk/Gimbal.h>
-#include <dji_sdk/MobileData.h>
-#include <dji_sdk/PayloadData.h>
-#include <dji_sdk/FlightAnomaly.h>
-#include <dji_sdk/VOPosition.h>
-#include <dji_sdk/FCTimeInUTC.h>
-#include <dji_sdk/GPSUTC.h>
+#include <dji_sdk/msg/gimbal.hpp>
+#include <dji_sdk/msg/mobile_data.hpp>
+#include <dji_sdk/msg/payload_data.hpp>
+#include <dji_sdk/msg/flight_anomaly.hpp>
+#include <dji_sdk/msg/vo_position.hpp>
+#include <dji_sdk/msg/fc_time_in_utc.hpp>
+#include <dji_sdk/msg/gpsutc.hpp>
 
 //! mission service
 // missionManager
-#include <dji_sdk/MissionStatus.h>
+#include <dji_sdk/srv/mission_status.hpp>
 // waypoint
-#include <dji_sdk/MissionWpAction.h>
-#include <dji_sdk/MissionWpGetInfo.h>
-#include <dji_sdk/MissionWpGetSpeed.h>
-#include <dji_sdk/MissionWpSetSpeed.h>
-#include <dji_sdk/MissionWpUpload.h>
+#include <dji_sdk/srv/mission_wp_action.hpp>
+#include <dji_sdk/srv/mission_wp_get_info.hpp>
+#include <dji_sdk/srv/mission_wp_get_speed.hpp>
+#include <dji_sdk/srv/mission_wp_set_speed.hpp>
+#include <dji_sdk/srv/mission_wp_upload.hpp>
 // hotpoint
-#include <dji_sdk/MissionHpAction.h>
-#include <dji_sdk/MissionHpGetInfo.h>
-#include <dji_sdk/MissionHpResetYaw.h>
-#include <dji_sdk/MissionHpUpdateRadius.h>
-#include <dji_sdk/MissionHpUpdateYawRate.h>
-#include <dji_sdk/MissionHpUpload.h>
+#include <dji_sdk/srv/mission_hp_action.hpp>
+#include <dji_sdk/srv/mission_hp_get_info.hpp>
+#include <dji_sdk/srv/mission_hp_reset_yaw.hpp>
+#include <dji_sdk/srv/mission_hp_update_radius.hpp>
+#include <dji_sdk/srv/mission_hp_update_yaw_rate.hpp>
+#include <dji_sdk/srv/mission_hp_upload.hpp>
 // hardsync
-#include <dji_sdk/SetHardSync.h>
+#include <dji_sdk/srv/set_hard_sync.hpp>
 
 //! service headers
-#include <dji_sdk/Activation.h>
-#include <dji_sdk/CameraAction.h>
-#include <dji_sdk/DroneArmControl.h>
-#include <dji_sdk/DroneTaskControl.h>
-#include <dji_sdk/MFIOConfig.h>
-#include <dji_sdk/MFIOSetValue.h>
-#include <dji_sdk/SDKControlAuthority.h>
-#include <dji_sdk/SetLocalPosRef.h>
-#include <dji_sdk/SendMobileData.h>
-#include <dji_sdk/SendPayloadData.h>
-#include <dji_sdk/QueryDroneVersion.h>
+#include <dji_sdk/srv/activation.hpp>
+#include <dji_sdk/srv/camera_action.hpp>
+#include <dji_sdk/srv/drone_arm_control.hpp>
+#include <dji_sdk/srv/drone_task_control.hpp>
+#include <dji_sdk/srv/mfio_config.hpp>
+#include <dji_sdk/srv/mfio_set_value.hpp>
+#include <dji_sdk/srv/sdk_control_authority.hpp>
+#include <dji_sdk/srv/set_local_pos_ref.hpp>
+#include <dji_sdk/srv/send_mobile_data.hpp>
+#include <dji_sdk/srv/send_payload_data.hpp>
+#include <dji_sdk/srv/query_drone_version.hpp>
 #ifdef ADVANCED_SENSING
-#include <dji_sdk/Stereo240pSubscription.h>
-#include <dji_sdk/StereoDepthSubscription.h>
-#include <dji_sdk/StereoVGASubscription.h>
-#include <dji_sdk/SetupCameraStream.h>
+#include <dji_sdk/srv/stereo240p_subscription.hpp>
+#include <dji_sdk/srv/stereo_depth_subscription.hpp>
+#include <dji_sdk/srv/stereo_vga_subscription.hpp>
+#include <dji_sdk/srv/setup_camera_stream.hpp>
 #endif
 
 //! SDK library
-#include <djiosdk/dji_vehicle.hpp>
+#include <dji_vehicle.hpp>
 
 #define C_EARTH (double)6378137.0
 #define C_PI (double)3.141592653589793
