@@ -4,7 +4,7 @@
 #include <tf2/utils.hpp>
 #include <cassert>
 
-#define _TICK2ROSTIME(tick) (ros::Duration((double)(tick) / 1000.0))
+#define _TICK2ROSTIME(tick) (rclcpp::Duration(std::chrono::nanoseconds(1000000 * tick)))
 
 
 void
@@ -19,7 +19,7 @@ DJISDKNode::dataBroadcastCallback()
 {
   using namespace DJI::OSDK;
 
-  ros::Time now_time = ros::Time::now();
+  rclcpp::Time now_time = this->get_clock()->now();
 
   uint16_t data_enable_flag = vehicle->broadcast->getPassFlag();
 
@@ -215,7 +215,7 @@ DJISDKNode::publish5HzData(Vehicle *vehicle, RecvContainer recvFrame,
   data++;
   Telemetry::TimeStamp packageTimeStamp = * (reinterpret_cast<Telemetry::TimeStamp *>(data));
 
-  ros::Time msg_time = ros::Time::now();
+  rclcpp::Time msg_time = rclcpp::Clock(RCL_ROS_TIME).now();
 
   if(p->align_time_with_FC)
   {
@@ -312,7 +312,7 @@ DJISDKNode::publish50HzData(Vehicle* vehicle, RecvContainer recvFrame,
   data++;
   Telemetry::TimeStamp packageTimeStamp = * (reinterpret_cast<Telemetry::TimeStamp *>(data));
 
-  ros::Time msg_time = ros::Time::now();
+  rclcpp::Time msg_time = rclcpp::Clock(RCL_ROS_TIME).now();
 
   if(p->align_time_with_FC)
   {
@@ -401,7 +401,7 @@ DJISDKNode::publish50HzData(Vehicle* vehicle, RecvContainer recvFrame,
 
   geometry_msgs::msg::Vector3Stamped gimbal_angle_vec3;
 
-  gimbal_angle_vec3.header.stamp = ros::Time::now();
+  gimbal_angle_vec3.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
   gimbal_angle_vec3.vector.x     = gimbal_angle.x;
   gimbal_angle_vec3.vector.y     = gimbal_angle.y;
   gimbal_angle_vec3.vector.z     = gimbal_angle.z;
@@ -541,7 +541,7 @@ DJISDKNode::publish100HzData(Vehicle *vehicle, RecvContainer recvFrame,
   data++;
   Telemetry::TimeStamp packageTimeStamp = * (reinterpret_cast<Telemetry::TimeStamp *>(data));
 
-  ros::Time msg_time = ros::Time::now();
+  rclcpp::Time msg_time = rclcpp::Clock(RCL_ROS_TIME).now();
 
   if(p->align_time_with_FC)
   {
@@ -631,8 +631,8 @@ DJISDKNode::publish400HzData(Vehicle *vehicle, RecvContainer recvFrame,
   Telemetry::TypeMap<Telemetry::TOPIC_HARD_SYNC>::type hardSync_FC =
     vehicle->subscribe->getValue<Telemetry::TOPIC_HARD_SYNC>();
 
-  ros::Time now_time = ros::Time::now();
-  ros::Time msg_time = now_time;
+  rclcpp::Time now_time = rclcpp::Clock(RCL_ROS_TIME).now();
+  rclcpp::Time msg_time = now_time;
 
   if(p->align_time_with_FC)
   {
@@ -697,7 +697,7 @@ DJISDKNode::publish400HzData(Vehicle *vehicle, RecvContainer recvFrame,
  *         be affected by OS scheduling depending on system load.
  */
 
-void DJISDKNode::alignRosTimeWithFlightController(ros::Time now_time, uint32_t tick)
+void DJISDKNode::alignRosTimeWithFlightController(rclcpp::Time now_time, uint32_t tick)
 {
   if (curr_align_state == UNALIGNED)
   {
@@ -713,7 +713,7 @@ void DJISDKNode::alignRosTimeWithFlightController(ros::Time now_time, uint32_t t
     static int retry_count = 0;
     RCLCPP_INFO_THROTTLE(this->get_logger(), *this->get_clock(), 1000, "[dji_sdk] Aliging time...");
 
-    double dt = std::fabs((now_time - (base_time + _TICK2ROSTIME(tick))).toSec());
+    double dt = std::fabs((now_time - (base_time + _TICK2ROSTIME(tick))).seconds());
 
     if(dt < TIME_DIFF_CHECK )
     {
@@ -763,7 +763,7 @@ void DJISDKNode::publish240pStereoImage(Vehicle*            vehicle,
 
       if (bit_val) {
         img.header.seq = recvFrame.recvData.stereoImgData->frame_index;
-        img.header.stamp = ros::Time::now(); // @todo
+        img.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now(); // @todo
         img.header.frame_id = recvFrame.recvData.stereoImgData->img_vec[img_idx].name;
         memcpy((char*)(&img.data[0]), recvFrame.recvData.stereoImgData->img_vec[img_idx++].image, 240*320);
 
@@ -798,7 +798,7 @@ void DJISDKNode::publishVGAStereoImage(Vehicle*            vehicle,
   img.data.resize(img.height*img.width);
 
   img.header.seq = recvFrame.recvData.stereoVGAImgData->frame_index;
-  img.header.stamp = ros::Time::now(); // @todo
+  img.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now(); // @todo
   img.header.frame_id = "vga_left";
   memcpy((char*)(&img.data[0]), recvFrame.recvData.stereoVGAImgData->img_vec[0], 480*640);
   node_ptr->stereo_vga_front_left_publisher->publish(img);
@@ -819,7 +819,7 @@ void DJISDKNode::publishFPVCameraImage(CameraRGBImage rgbImg, void* userData)
   img.encoding = "rgb8";
   img.data = rgbImg.rawData;
 
-  img.header.stamp = ros::Time::now();
+  img.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
   img.header.frame_id = "FPV_CAMERA";
   node_ptr->fpv_camera_stream_publisher->publish(img);
 }
@@ -835,7 +835,7 @@ void DJISDKNode::publishMainCameraImage(CameraRGBImage rgbImg, void* userData)
   img.encoding = "rgb8";
   img.data = rgbImg.rawData;
 
-  img.header.stamp = ros::Time::now();
+  img.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
   img.header.frame_id = "MAIN_CAMERA";
   node_ptr->main_camera_stream_publisher->publish(img);
 }

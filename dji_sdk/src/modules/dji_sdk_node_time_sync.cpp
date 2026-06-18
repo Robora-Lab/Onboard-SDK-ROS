@@ -20,7 +20,7 @@ void DJISDKNode::NMEACallback(Vehicle* vehiclePtr,
   uint8_t rawBuf[length];
   memcpy(rawBuf, recvFrame.recvData.raw_ack_array, length);
   nmeaSentence.header.frame_id = "NMEA";
-  nmeaSentence.header.stamp = ros::Time::now();
+  nmeaSentence.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
   nmeaSentence.sentence = std::string((char*)rawBuf, length);
   DJISDKNode *p = (DJISDKNode *) userData;
   p->time_sync_nmea_publisher->publish(nmeaSentence);
@@ -34,7 +34,7 @@ void DJISDKNode::GPSUTCTimeCallback(Vehicle *vehiclePtr,
   int length = recvFrame.recvInfo.len - OpenProtocol::PackageMin - 4;
   uint8_t rawBuf[length];
   memcpy(rawBuf, recvFrame.recvData.raw_ack_array, length);
-  GPSUTC.stamp = ros::Time::now();
+  GPSUTC.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
   GPSUTC.utc_time_data = std::string((char*)rawBuf, length).c_str();
   DJISDKNode *p = (DJISDKNode *) userData;
   p->time_sync_gps_utc_publisher->publish(GPSUTC);
@@ -45,7 +45,7 @@ void DJISDKNode::FCTimeInUTCCallback(Vehicle* vehiclePtr,
                                      UserData userData)
 {
   dji_sdk::msg::FCTimeInUTC fcTimeInUtc;
-  fcTimeInUtc.stamp = ros::Time::now();
+  fcTimeInUtc.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
   fcTimeInUtc.fc_timestamp_us = recvFrame.recvData.fcTimeInUTC.fc_timestamp_us;
   fcTimeInUtc.fc_utc_hhmmss = recvFrame.recvData.fcTimeInUTC.utc_hhmmss;
   fcTimeInUtc.fc_utc_yymmdd = recvFrame.recvData.fcTimeInUTC.utc_yymmdd;

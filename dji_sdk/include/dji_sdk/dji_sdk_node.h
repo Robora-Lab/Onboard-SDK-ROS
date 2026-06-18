@@ -439,13 +439,13 @@ private:
   static double constexpr TIME_DIFF_CHECK = 0.008;
   static double constexpr TIME_DIFF_ALERT = 0.020;
 
-  ros::Time base_time;
+  rclcpp::Time base_time;
 
   bool align_time_with_FC;
 
   bool local_pos_ref_set;
 
-  void alignRosTimeWithFlightController(ros::Time now_time, uint32_t tick);
+  void alignRosTimeWithFlightController(rclcpp::Time now_time, uint32_t tick);
   void setUpM100DefaultFreq(uint8_t freq[16]);
   void setUpA3N3DefaultFreq(uint8_t freq[16]);
   void gpsConvertENU(double &ENU_x, double &ENU_y,

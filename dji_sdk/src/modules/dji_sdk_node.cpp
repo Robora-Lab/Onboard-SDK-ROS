@@ -623,7 +623,7 @@ DJISDKNode::initDataSubscribeFromFC()
     }
   }
 
-  ros::Duration(1).sleep();
+  rclcpp::sleep_for(std::chrono::seconds(1));
   return true;
 }
 
