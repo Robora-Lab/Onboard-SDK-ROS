@@ -22,7 +22,7 @@ DJISDKNode::DJISDKNode()
     curr_align_state(UNALIGNED)
 {
   this->declare_parameter("acm_name", std::string("/dev/ttyACM0"));
-  acm_device = this->get_parameter("my_parameter").as_string();
+  acm_device = this->get_parameter("acm_name").as_string();
   this->declare_parameter("serial_name", std::string("/dev/ttyUSB0"));
   serial_device = this->get_parameter("serial_name").as_string();
   this->declare_parameter("baud_rate", 921600);

@@ -38,7 +38,6 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -162,18 +161,12 @@ target_link_libraries(dji_sdk_node
 # )
 
 ## Mark executables and/or libraries for installation
-install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-)
-
 install(TARGETS dji_sdk_node
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 install(DIRECTORY launch
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+  DESTINATION share/${PROJECT_NAME}/
 )
 
 ## Mark cpp header files for installation
