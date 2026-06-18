@@ -421,8 +421,8 @@ private:
   bool stereo_subscription_success;
   bool stereo_vga_subscription_success;
   bool user_select_broadcast;
-  const tf::Matrix3x3 R_FLU2FRD;
-  const tf::Matrix3x3 R_ENU2NED;
+  const tf2::Matrix3x3 R_FLU2FRD;
+  const tf2::Matrix3x3 R_ENU2NED;
 
   void flightControl(uint8_t flag, float32_t xSP, float32_t ySP, float32_t zSP, float32_t yawSP);
 

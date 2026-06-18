@@ -17,8 +17,8 @@ using namespace std::placeholders;
 DJISDKNode::DJISDKNode()
   : Node("dji_sdk"),
     telemetry_from_fc(USE_BROADCAST),
-    R_FLU2FRD(tf::Matrix3x3(1,  0,  0, 0, -1,  0, 0,  0, -1)),
-    R_ENU2NED(tf::Matrix3x3(0,  1,  0, 1,  0,  0, 0,  0, -1)),
+    R_FLU2FRD(tf2::Matrix3x3(1,  0,  0, 0, -1,  0, 0,  0, -1)),
+    R_ENU2NED(tf2::Matrix3x3(0,  1,  0, 1,  0,  0, 0,  0, -1)),
     curr_align_state(UNALIGNED)
 {
   this->declare_parameter("acm_name", std::string("/dev/ttyACM0"));
