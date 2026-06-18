@@ -133,21 +133,21 @@ private:
 
   //! flight control subscriber callbacks
   void flightControlSetpointCallback(
-    const sensor_msgs::Joy::ConstPtr& pMsg);
+    const sensor_msgs::msg::Joy::SharedPtr pMsg);
 
   void flightControlPxPyPzYawCallback(
-    const sensor_msgs::Joy::ConstPtr& pMsg);
+    const sensor_msgs::msg::Joy::SharedPtr pMsg);
 
   void flightControlVxVyVzYawrateCallback(
-    const sensor_msgs::Joy::ConstPtr& pMsg);
+    const sensor_msgs::msg::Joy::SharedPtr pMsg);
 
   void flightControlRollPitchPzYawrateCallback(
-    const sensor_msgs::Joy::ConstPtr& pMsg);
+    const sensor_msgs::msg::Joy::SharedPtr pMsg);
 
   //! general subscriber callbacks
-  void gimbalAngleCtrlCallback(const dji_sdk::Gimbal::ConstPtr& msg);
+  void gimbalAngleCtrlCallback(const dji_sdk::msg::Gimbal msg);
   void gimbalSpeedCtrlCallback(
-    const geometry_msgs::Vector3Stamped::ConstPtr& msg);
+    const geometry_msgs::msg::Vector3Stamped msg);
 
   //! general service callbacks
   bool droneActivationCallback(dji_sdk::Activation::Request&  request,
@@ -345,15 +345,15 @@ private:
 #endif
 
   //! flight control subscribers
-  ros::Subscriber flight_control_sub;
+  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr flight_control_sub;
 
-  ros::Subscriber flight_control_position_yaw_sub;
-  ros::Subscriber flight_control_velocity_yawrate_sub;
-  ros::Subscriber flight_control_rollpitch_yawrate_vertpos_sub;
+  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr flight_control_position_yaw_sub;
+  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr flight_control_velocity_yawrate_sub;
+  rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr flight_control_rollpitch_yawrate_vertpos_sub;
 
   //! general subscribers
-  ros::Subscriber gimbal_angle_cmd_subscriber;
-  ros::Subscriber gimbal_speed_cmd_subscriber;
+  rclcpp::Subscription<dji_sdk::msg::Gimbal>::SharedPtr gimbal_angle_cmd_subscriber;
+  rclcpp::Subscription<geometry_msgs::msg::Vector3Stamped>::SharedPtr gimbal_speed_cmd_subscriber;
   //! telemetry data publisher
   rclcpp::Publisher<geometry_msgs::msg::QuaternionStamped>::SharedPtr attitude_publisher;
   rclcpp::Publisher<geometry_msgs::msg::Vector3Stamped>::SharedPtr angularRate_publisher;

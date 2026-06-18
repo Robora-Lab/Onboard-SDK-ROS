@@ -12,6 +12,7 @@
 #include <dji_sdk/dji_sdk_node.h>
 
 using namespace DJI::OSDK;
+using namespace std::placeholders;
 
 DJISDKNode::DJISDKNode()
   : Node("dji_sdk"),
@@ -187,24 +188,24 @@ bool DJISDKNode::initServices() {
 bool
 DJISDKNode::initFlightControl()
 {
-  flight_control_sub = nh.subscribe<sensor_msgs::Joy>(
+  flight_control_sub = this->create_subscription<sensor_msgs::msg::Joy>(
     "dji_sdk/flight_control_setpoint_generic", 10, 
-    &DJISDKNode::flightControlSetpointCallback,   this);
+    std::bind(&DJISDKNode::flightControlSetpointCallback, this, _1));
 
   flight_control_position_yaw_sub =
-    nh.subscribe<sensor_msgs::Joy>(
+    this->create_subscription<sensor_msgs::msg::Joy>(
       "dji_sdk/flight_control_setpoint_ENUposition_yaw", 10,
-      &DJISDKNode::flightControlPxPyPzYawCallback, this);
+      std::bind(&DJISDKNode::flightControlPxPyPzYawCallback, this, _1));
 
   flight_control_velocity_yawrate_sub =
-    nh.subscribe<sensor_msgs::Joy>(
+    this->create_subscription<sensor_msgs::msg::Joy>(
       "dji_sdk/flight_control_setpoint_ENUvelocity_yawrate", 10,
-      &DJISDKNode::flightControlVxVyVzYawrateCallback, this);
+      std::bind(&DJISDKNode::flightControlVxVyVzYawrateCallback, this, _1));
 
   flight_control_rollpitch_yawrate_vertpos_sub =
-    nh.subscribe<sensor_msgs::Joy>(
+    this->create_subscription<sensor_msgs::msg::Joy>(
       "dji_sdk/flight_control_setpoint_rollpitch_yawrate_zposition", 10,
-      &DJISDKNode::flightControlRollPitchPzYawrateCallback, this);
+      std::bind(&DJISDKNode::flightControlRollPitchPzYawrateCallback, this, _1));
 
   return true;
 }
@@ -232,10 +233,10 @@ DJISDKNode::activate(int l_app_id, std::string l_enc_key)
 bool
 DJISDKNode::initSubscriber()
 {
-  gimbal_angle_cmd_subscriber = nh.subscribe<dji_sdk::Gimbal>(
-    "dji_sdk/gimbal_angle_cmd", 10, &DJISDKNode::gimbalAngleCtrlCallback, this);
-  gimbal_speed_cmd_subscriber = nh.subscribe<geometry_msgs::Vector3Stamped>(
-    "dji_sdk/gimbal_speed_cmd", 10, &DJISDKNode::gimbalSpeedCtrlCallback, this);
+  gimbal_angle_cmd_subscriber = this->create_subscription<dji_sdk::msg::Gimbal>(
+    "dji_sdk/gimbal_angle_cmd", 10, std::bind(&DJISDKNode::gimbalAngleCtrlCallback, this, _1));
+  gimbal_speed_cmd_subscriber = this->create_subscription<geometry_msgs::msg::Vector3Stamped>(
+    "dji_sdk/gimbal_speed_cmd", 10, std::bind(&DJISDKNode::gimbalSpeedCtrlCallback, this, _1));
   return true;
 }
 
