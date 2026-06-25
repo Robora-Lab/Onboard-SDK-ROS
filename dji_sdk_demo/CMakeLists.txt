@@ -7,61 +7,61 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-        roscpp
-        geometry_msgs
-        dji_sdk
-        image_transport # for message_filter
-        )
+# find_package(catkin REQUIRED COMPONENTS
+#         roscpp
+#         geometry_msgs
+#         dji_sdk
+#         image_transport # for message_filter
+#         )
 
-find_package(DJIOSDK REQUIRED)
+# find_package(DJIOSDK REQUIRED)
 
-find_package(darknet_ros QUIET)
-if(darknet_ros_FOUND)
-    message(STATUS "Found darknet_ros package, will use it for object depth perception demo.")
-    add_definitions(-DUSE_DARKNET_ROS)
-endif()
+# find_package(darknet_ros QUIET)
+# if(darknet_ros_FOUND)
+#     message(STATUS "Found darknet_ros package, will use it for object depth perception demo.")
+#     add_definitions(-DUSE_DARKNET_ROS)
+# endif()
 
 # Try to see if user has OpenCV installed
 # If there's version 3.3.0+, depth perception samples will be compiled
 # If it's not version 3.3.0+, the sample will not be compiled
-find_package(OpenCV 3.3.0 QUIET)
-if (OpenCV_FOUND)
-    message(STATUS "Found OpenCV ${OpenCV_VERSION} installed in the system, will use it for depth perception sample")
-    message(STATUS " - Includes: ${OpenCV_INCLUDE_DIRS}")
-    add_definitions(-DOPEN_CV_INSTALLED)
-    set(OPEN_CV_3_3_0_INSTALLED TRUE)
+# find_package(OpenCV 3.3.0 QUIET)
+# if (OpenCV_FOUND)
+#     message(STATUS "Found OpenCV ${OpenCV_VERSION} installed in the system, will use it for depth perception sample")
+#     message(STATUS " - Includes: ${OpenCV_INCLUDE_DIRS}")
+#     add_definitions(-DOPEN_CV_INSTALLED)
+#     set(OPEN_CV_3_3_0_INSTALLED TRUE)
 
-    find_package(OpenCVContribImgProc QUIET)
+#     find_package(OpenCVContribImgProc QUIET)
 
-    find_package(OpenCVViz QUIET)
-else()
-    find_package(OpenCV QUIET )
-    if (OpenCV_FOUND)
-        message(STATUS "Found OpenCV ${OpenCV_VERSION} installed in the system, depth percpetion demo requires 3.3.0+ for better experience")
-        message(STATUS " - Includes: ${OpenCV_INCLUDE_DIRS}")
-        add_definitions(-DOPEN_CV_INSTALLED)
-    else()
-        message(STATUS "Did not find OpenCV in the system, image data is inside RecvContainer as raw data")
-    endif()
-endif()
+#     find_package(OpenCVViz QUIET)
+# else()
+#     find_package(OpenCV QUIET )
+#     if (OpenCV_FOUND)
+#         message(STATUS "Found OpenCV ${OpenCV_VERSION} installed in the system, depth percpetion demo requires 3.3.0+ for better experience")
+#         message(STATUS " - Includes: ${OpenCV_INCLUDE_DIRS}")
+#         add_definitions(-DOPEN_CV_INSTALLED)
+#     else()
+#         message(STATUS "Did not find OpenCV in the system, image data is inside RecvContainer as raw data")
+#     endif()
+# endif()
 
 
-find_package(CUDA QUIET)
-if(CUDA_FOUND)
-    message(STATUS "Found ${CUDA_VERSION} CUDA installed in the system, will use it for depth perception sample")
-    message(STATUS " - Includes: ${CUDA_INCLUDE_DIRS}")
-    add_definitions(-DUSE_GPU)
-elseif()
-    message(STATUS "Did not find CUDA in the system")
-endif()
+# find_package(CUDA QUIET)
+# if(CUDA_FOUND)
+#     message(STATUS "Found ${CUDA_VERSION} CUDA installed in the system, will use it for depth perception sample")
+#     message(STATUS " - Includes: ${CUDA_INCLUDE_DIRS}")
+#     add_definitions(-DUSE_GPU)
+# elseif()
+#     message(STATUS "Did not find CUDA in the system")
+# endif()
 
-find_package(AdvancedSensing QUIET)
+# find_package(AdvancedSensing QUIET)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
-set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+# set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -148,12 +148,12 @@ set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-        #  INCLUDE_DIRS include
-        #  LIBRARIES dji_sdk_demo
-        #  CATKIN_DEPENDS dji_sdk roscpp
-        #  DEPENDS dji_sdk
-)
+# catkin_package(
+#         #  INCLUDE_DIRS include
+#         #  LIBRARIES dji_sdk_demo
+#         #  CATKIN_DEPENDS dji_sdk roscpp
+#         #  DEPENDS dji_sdk
+# )
 
 ###########
 ## Build ##
@@ -162,10 +162,10 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
-include_directories(
-        include
-        ${catkin_INCLUDE_DIRS}
-)
+# include_directories(
+#         include
+#         ${catkin_INCLUDE_DIRS}
+# )
 
 ## Declare a C++ library
 # add_library(dji_sdk_demo
@@ -189,107 +189,107 @@ include_directories(
 #   ${catkin_LIBRARIES}
 # )
 
-add_executable(demo_mission
-        src/demo_mission.cpp)
-target_link_libraries(demo_mission
-        ${catkin_LIBRARIES}
-        ${DJIOSDK_LIBRARIES}
-        )
-add_dependencies(demo_mission dji_sdk_generate_messages_cpp)
+# add_executable(demo_mission
+#         src/demo_mission.cpp)
+# target_link_libraries(demo_mission
+#         ${catkin_LIBRARIES}
+#         ${DJIOSDK_LIBRARIES}
+#         )
+# add_dependencies(demo_mission dji_sdk_generate_messages_cpp)
 
-add_executable(demo_camera_gimbal
-        src/demo_camera_gimbal.cpp )
-target_link_libraries(demo_camera_gimbal
-        ${catkin_LIBRARIES}
-        ${DJIOSDK_LIBRARIES}
-        )
-add_dependencies(demo_camera_gimbal dji_sdk_generate_messages_cpp)
+# add_executable(demo_camera_gimbal
+#         src/demo_camera_gimbal.cpp )
+# target_link_libraries(demo_camera_gimbal
+#         ${catkin_LIBRARIES}
+#         ${DJIOSDK_LIBRARIES}
+#         )
+# add_dependencies(demo_camera_gimbal dji_sdk_generate_messages_cpp)
 
-add_executable(demo_mfio
-        src/demo_mfio.cpp)
-target_link_libraries(demo_mfio
-        ${catkin_LIBRARIES}
-        ${DJIOSDK_LIBRARIES}
-        )
-add_dependencies(demo_mfio dji_sdk_generate_messages_cpp)
+# add_executable(demo_mfio
+#         src/demo_mfio.cpp)
+# target_link_libraries(demo_mfio
+#         ${catkin_LIBRARIES}
+#         ${DJIOSDK_LIBRARIES}
+#         )
+# add_dependencies(demo_mfio dji_sdk_generate_messages_cpp)
 
-add_executable(demo_flight_control
-        src/demo_flight_control.cpp)
+# add_executable(demo_flight_control
+#         src/demo_flight_control.cpp)
 
-target_link_libraries(demo_flight_control
-        ${catkin_LIBRARIES}
-        ${DJIOSDK_LIBRARIES}
-        )
-add_dependencies(demo_flight_control dji_sdk_generate_messages_cpp)
+# target_link_libraries(demo_flight_control
+#         ${catkin_LIBRARIES}
+#         ${DJIOSDK_LIBRARIES}
+#         )
+# add_dependencies(demo_flight_control dji_sdk_generate_messages_cpp)
 
-add_executable(demo_mobile_comm
-        src/demo_mobile_comm.cpp)
+# add_executable(demo_mobile_comm
+#         src/demo_mobile_comm.cpp)
 
-target_link_libraries(demo_mobile_comm
-        ${catkin_LIBRARIES}
-        ${DJIOSDK_LIBRARIES}
-        )
-add_dependencies(demo_mobile_comm dji_sdk_generate_messages_cpp)
+# target_link_libraries(demo_mobile_comm
+#         ${catkin_LIBRARIES}
+#         ${DJIOSDK_LIBRARIES}
+#         )
+# add_dependencies(demo_mobile_comm dji_sdk_generate_messages_cpp)
 
-add_executable(demo_payload_comm
-        src/demo_payload_comm.cpp)
+# add_executable(demo_payload_comm
+#         src/demo_payload_comm.cpp)
 
-target_link_libraries(demo_payload_comm
-        ${catkin_LIBRARIES}
-        ${DJIOSDK_LIBRARIES}
-        )
-add_dependencies(demo_payload_comm dji_sdk_generate_messages_cpp)
+# target_link_libraries(demo_payload_comm
+#         ${catkin_LIBRARIES}
+#         ${DJIOSDK_LIBRARIES}
+#         )
+# add_dependencies(demo_payload_comm dji_sdk_generate_messages_cpp)
 
-add_executable(demo_local_position_control
-        src/demo_local_position_control.cpp)
-target_link_libraries(demo_local_position_control
-        ${catkin_LIBRARIES}
-        ${DJIOSDK_LIBRARIES}
-        )
-add_dependencies(demo_local_position_control dji_sdk_generate_messages_cpp)
+# add_executable(demo_local_position_control
+#         src/demo_local_position_control.cpp)
+# target_link_libraries(demo_local_position_control
+#         ${catkin_LIBRARIES}
+#         ${DJIOSDK_LIBRARIES}
+#         )
+# add_dependencies(demo_local_position_control dji_sdk_generate_messages_cpp)
 
-add_executable(demo_time_sync
-        src/demo_time_sync.cpp)
-target_link_libraries(demo_time_sync
-        ${catkin_LIBRARIES}
-        ${DJIOSDK_LIBRARIES}
-        )
-add_dependencies(demo_time_sync dji_sdk_generate_messages_cpp)
+# add_executable(demo_time_sync
+#         src/demo_time_sync.cpp)
+# target_link_libraries(demo_time_sync
+#         ${catkin_LIBRARIES}
+#         ${DJIOSDK_LIBRARIES}
+#         )
+# add_dependencies(demo_time_sync dji_sdk_generate_messages_cpp)
 
 
-if (OPEN_CV_3_3_0_INSTALLED AND FOUND_OPENCV_VIZ AND FOUND_ADVANCED_SENSING)
-    message(STATUS "Found OpenCV ${OpenCV_VERSION}, Viz3d, and advanced sensing module, depth percpetion demo will be compiled")
+# if (OPEN_CV_3_3_0_INSTALLED AND FOUND_OPENCV_VIZ AND FOUND_ADVANCED_SENSING)
+#     message(STATUS "Found OpenCV ${OpenCV_VERSION}, Viz3d, and advanced sensing module, depth percpetion demo will be compiled")
 
-    FILE(GLOB STEREO_UTILITY_SRC_FILE
-            src/stereo_utility/camera_param.cpp
-            src/stereo_utility/stereo_frame.cpp
-            src/stereo_utility/config.cpp
-            src/stereo_utility/point_cloud_viewer.cpp)
+#     FILE(GLOB STEREO_UTILITY_SRC_FILE
+#             src/stereo_utility/camera_param.cpp
+#             src/stereo_utility/stereo_frame.cpp
+#             src/stereo_utility/config.cpp
+#             src/stereo_utility/point_cloud_viewer.cpp)
 
-    add_executable(demo_stereo_depth_perception
-            src/demo_stereo_depth_perception.cpp
-            ${STEREO_UTILITY_SRC_FILE} )
-    target_link_libraries(demo_stereo_depth_perception
-            ${catkin_LIBRARIES}
-            ${DJIOSDK_LIBRARIES}
-            ${OpenCV_LIBS}
-            )
-    add_dependencies(demo_stereo_depth_perception dji_sdk_generate_messages_cpp)
-endif()
+#     add_executable(demo_stereo_depth_perception
+#             src/demo_stereo_depth_perception.cpp
+#             ${STEREO_UTILITY_SRC_FILE} )
+#     target_link_libraries(demo_stereo_depth_perception
+#             ${catkin_LIBRARIES}
+#             ${DJIOSDK_LIBRARIES}
+#             ${OpenCV_LIBS}
+#             )
+#     add_dependencies(demo_stereo_depth_perception dji_sdk_generate_messages_cpp)
+# endif()
 
-if (OPEN_CV_3_3_0_INSTALLED AND FOUND_OPENCV_VIZ AND darknet_ros_FOUND AND FOUND_ADVANCED_SENSING)
-    message(STATUS "Found OpenCV ${OpenCV_VERSION}, Viz3d, darknet_ros, and advanced sensing module, depth percpetion demo will be compiled")
+# if (OPEN_CV_3_3_0_INSTALLED AND FOUND_OPENCV_VIZ AND darknet_ros_FOUND AND FOUND_ADVANCED_SENSING)
+#     message(STATUS "Found OpenCV ${OpenCV_VERSION}, Viz3d, darknet_ros, and advanced sensing module, depth percpetion demo will be compiled")
 
-    add_executable(demo_stereo_object_depth_perception
-            src/demo_stereo_object_depth_perception.cpp
-            ${STEREO_UTILITY_SRC_FILE} )
-    target_link_libraries(demo_stereo_object_depth_perception
-            ${catkin_LIBRARIES}
-            ${DJIOSDK_LIBRARIES}
-            ${OpenCV_LIBS}
-            )
-    add_dependencies(demo_stereo_object_depth_perception dji_sdk_generate_messages_cpp)
-endif()
+#     add_executable(demo_stereo_object_depth_perception
+#             src/demo_stereo_object_depth_perception.cpp
+#             ${STEREO_UTILITY_SRC_FILE} )
+#     target_link_libraries(demo_stereo_object_depth_perception
+#             ${catkin_LIBRARIES}
+#             ${DJIOSDK_LIBRARIES}
+#             ${OpenCV_LIBS}
+#             )
+#     add_dependencies(demo_stereo_object_depth_perception dji_sdk_generate_messages_cpp)
+# endif()
 
 #############
 ## Install ##
@@ -308,9 +308,9 @@ endif()
 
 ## Mark cpp header files for installation
 
-install(DIRECTORY launch
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
-        )
+# install(DIRECTORY launch
+#         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+#         )
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES
 #   # myfile1
